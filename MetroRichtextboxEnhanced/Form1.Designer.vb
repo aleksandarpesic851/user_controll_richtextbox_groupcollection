@@ -25,6 +25,7 @@ Partial Class Form1
         Me.Label1 = New System.Windows.Forms.Label()
         Me.Panel1 = New System.Windows.Forms.Panel()
         Me.TextBox1 = New System.Windows.Forms.TextBox()
+        Me.NestedControlDesignerLibrary1 = New MetroRichtextboxEnhanced.NestedControlDesignerLibrary()
         Me.Panel1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -57,11 +58,29 @@ Partial Class Form1
         Me.TextBox1.Size = New System.Drawing.Size(100, 23)
         Me.TextBox1.TabIndex = 4
         '
+        'NestedControlDesignerLibrary1
+        '
+        Me.NestedControlDesignerLibrary1.Caption1 = "Label1"
+        Me.NestedControlDesignerLibrary1.Location = New System.Drawing.Point(61, 66)
+        Me.NestedControlDesignerLibrary1.Name = "NestedControlDesignerLibrary1"
+        Me.NestedControlDesignerLibrary1.Size = New System.Drawing.Size(244, 260)
+        Me.NestedControlDesignerLibrary1.TabIndex = 5
+        '
+        '
+        '
+        Me.NestedControlDesignerLibrary1.WorkingArea.BackColor = System.Drawing.SystemColors.ControlDark
+        Me.NestedControlDesignerLibrary1.WorkingArea.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.NestedControlDesignerLibrary1.WorkingArea.Location = New System.Drawing.Point(0, 15)
+        Me.NestedControlDesignerLibrary1.WorkingArea.Name = "pnlWorkingArea"
+        Me.NestedControlDesignerLibrary1.WorkingArea.Size = New System.Drawing.Size(244, 245)
+        Me.NestedControlDesignerLibrary1.WorkingArea.TabIndex = 1
+        '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 15.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(800, 539)
+        Me.Controls.Add(Me.NestedControlDesignerLibrary1)
         Me.Controls.Add(Me.Panel1)
         Me.Name = "Form1"
         Me.Text = "Form1"
@@ -73,4 +92,5 @@ Partial Class Form1
     Friend WithEvents Label1 As Label
     Friend WithEvents Panel1 As Panel
     Friend WithEvents TextBox1 As TextBox
+    Friend WithEvents NestedControlDesignerLibrary1 As NestedControlDesignerLibrary
 End Class

@@ -4,9 +4,76 @@ Imports System.Drawing.Drawing2D
 Imports System.Runtime.InteropServices
 Imports System.Drawing.Imaging
 Imports System.Windows.Forms.VisualStyles.VisualStyleElement.Button
+Imports System.Drawing.Design
+Imports System.Windows.Forms.Design
 
+<System.ComponentModel.Designer(GetType(MetroGroupboxCollection.Designer))>
 Public Class MetroGroupboxCollection
-    Inherits Panel
+    Inherits UserControl
+
+    Private Panel1 As Panel
+    Public Class Designer
+        Inherits System.Windows.Forms.Design.ParentControlDesigner
+
+        Public Overrides Sub Initialize(ByVal component As System.ComponentModel.IComponent)
+            MyBase.Initialize(component)
+            Dim content As Panel = DirectCast(Me.Control, MetroGroupboxCollection).Content
+            EnableDesignMode(content, "Content")
+
+        End Sub
+        'Public Overrides Function CanParent(control As Control) As Boolean
+        '    Return False
+        'End Function
+
+        'Protected Overrides Sub OnDragOver(de As DragEventArgs)
+        '    de.Effect = DragDropEffects.None
+        'End Sub
+        'Protected Overrides Function CreateToolCore(tool As ToolboxItem, x As Integer, y As Integer, width As Integer, height As Integer, hasLocation As Boolean, hasSize As Boolean) As IComponent()
+        '    Return Nothing
+        'End Function
+    End Class
+
+    Public Class MyPanelDesigner
+        Inherits System.Windows.Forms.Design.ParentControlDesigner
+
+        Public Overrides ReadOnly Property SelectionRules As SelectionRules
+            Get
+                Dim _selectionRules As SelectionRules = MyBase.SelectionRules
+                _selectionRules &= Not SelectionRules.AllSizeable
+                Return _selectionRules
+            End Get
+        End Property
+
+        Protected Overrides Sub PostFilterAttributes(attributes As IDictionary)
+            MyBase.PostFilterAttributes(attributes)
+            attributes(GetType(DockingAttribute)) = New DockingAttribute(DockingBehavior.Never)
+        End Sub
+
+        Protected Overrides Sub PostFilterProperties(properties As IDictionary)
+
+            MyBase.PostFilterProperties(properties)
+            Dim propertiesToRemove As String() = {
+                "Dock", "Anchor",
+                "Size", "Location", "Width", "Height",
+                "MinimumSize", "MaximumSize",
+                "AutoSize", "AutoSizeMode",
+                "Visible", "Enabled"
+            }
+            For Each item As String In propertiesToRemove
+                If properties.Contains(item) Then
+                    properties(item) = TypeDescriptor.CreateProperty(Me.Component.GetType(), DirectCast(properties(item), PropertyDescriptor), New BrowsableAttribute(False))
+                End If
+            Next
+        End Sub
+    End Class
+    <Category("Appearance")>
+    <System.ComponentModel.DesignerSerializationVisibility(System.ComponentModel.DesignerSerializationVisibility.Content)>
+    Public ReadOnly Property Content() As Panel
+        Get
+            Return Panel1
+        End Get
+    End Property
+
 #Region "Declarations"
     Private Const DEFAULT_GROUPBOX_WIDTH As Integer = 200
     Private Const DEFAULT_GROUPBOX_HEIGHT As Integer = 200
@@ -31,6 +98,16 @@ Public Class MetroGroupboxCollection
         SetStyle(ControlStyles.Opaque, True)
         Me.Size = New Size(DEFAULT_GROUPBOX_WIDTH, DEFAULT_GROUPBOX_HEIGHT * 1.2)
         Me.Padding = New Padding(3)
+        Me.Controls.Add(mGroupboxs(0))
+        Me.Panel1 = New System.Windows.Forms.Panel()
+        Me.Panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.Panel1.Location = New System.Drawing.Point(0, 0)
+        Me.Panel1.Dock = DockStyle.Top
+        Me.Panel1.Name = "Panel1"
+        Me.Panel1.Size = New System.Drawing.Size(20, 100)
+        Me.Panel1.BackColor = Color.Yellow
+        Me.Controls.Add(Me.Panel1)
+        TypeDescriptor.AddAttributes(Me.Content, New DesignerAttribute(GetType(Designer)))
         'Me.AutoSize = True
         'Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
     End Sub
@@ -41,7 +118,8 @@ Public Class MetroGroupboxCollection
 #Region "Properties"
 
 #Region "Groupbox Item Properties"
-    Private mGroupboxs As MetroGroupbox()
+    Public mGroupboxs As MetroGroupbox() = {New MetroGroupbox()}
+
 
     ''' <summary>
     ''' Groupbox Items' Propertie
@@ -317,155 +395,158 @@ Public Class MetroGroupboxCollection
         MyBase.OnPaint(e)
     End Sub
 
-    Partial Public Class MetroGroupbox
-        Inherits ContainerBase
+End Class
 
-        Private _Border As Boolean
-        Private _BackColor As Color
-        Private _BackColorGradient As Color
-        Private _TitleColor As Color
-        Private _TitleColorGradient As Color
-        Private _BorderColor As Color
-        Private _ForeColor As Color
-        Private _Opacity As Integer
-        Private HeaderColor, TextColor As Brush
 
-        Sub New()
 
-            Me.SetStyle(ControlStyles.SupportsTransparentBackColor, True)
-            'MyBase.LockWidth = 500
-            MyBase.Size = New Size(DEFAULT_GROUPBOX_WIDTH, DEFAULT_GROUPBOX_HEIGHT)
-            _BorderColor = Color.Black
-            ControlMode = True
-            Dock = DockStyle.Top
-            'SetColor("Border", _BorderColor)
-            _Border = True
-            _ForeColor = Color.White
-            Text = "Title"
-            _BackColor = Color.FromArgb(255, 80, 80, 80)
-            _BackColorGradient = Color.FromArgb(150, 64, 64, 64)
-            _TitleColor = Color.FromArgb(255, 32, 32, 32)
-            _TitleColorGradient = Color.FromArgb(255, 48, 48, 48)
-        End Sub
+Public Class MetroGroupbox
+    Inherits ContainerBase
 
-        <Category("MetroGroupbox Properties")>
-        Public Property [BackColor] As Color
-            Get
-                Return _BackColor
-            End Get
-            Set(ByVal value As Color)
-                _BackColor = value
+    Private _Border As Boolean
+    Private _BackColor As Color
+    Private _BackColorGradient As Color
+    Private _TitleColor As Color
+    Private _TitleColorGradient As Color
+    Private _BorderColor As Color
+    Private _ForeColor As Color
+    Private _Opacity As Integer
+    Private HeaderColor, TextColor As Brush
 
-            End Set
-        End Property
-        <Category("MetroGroupbox Properties")>
-        Public Property BackColorGradient As Color
-            Get
-                Return _BackColorGradient
-            End Get
-            Set(ByVal value As Color)
-                _BackColorGradient = value
+    Sub New()
 
-            End Set
-        End Property
+        Me.SetStyle(ControlStyles.SupportsTransparentBackColor, True)
+        'MyBase.LockWidth = 500
+        MyBase.Size = New Size(200, 200)
+        _BorderColor = Color.Black
+        ControlMode = True
+        Dock = DockStyle.Top
+        'SetColor("Border", _BorderColor)
+        _Border = True
+        _ForeColor = Color.White
+        Text = "Title"
+        _BackColor = Color.FromArgb(255, 80, 80, 80)
+        _BackColorGradient = Color.FromArgb(150, 64, 64, 64)
+        _TitleColor = Color.FromArgb(255, 32, 32, 32)
+        _TitleColorGradient = Color.FromArgb(255, 48, 48, 48)
+    End Sub
 
-        <Category("MetroGroupbox Properties")>
-        Public Property BorderColor As Color
-            Get
-                Return _BorderColor
-            End Get
-            Set(ByVal value As Color)
-                _BorderColor = value
+    <Category("MetroGroupbox Properties")>
+    Public Property [BackColor] As Color
+        Get
+            Return _BackColor
+        End Get
+        Set(ByVal value As Color)
+            _BackColor = value
 
-            End Set
-        End Property
+        End Set
+    End Property
+    <Category("MetroGroupbox Properties")>
+    Public Property BackColorGradient As Color
+        Get
+            Return _BackColorGradient
+        End Get
+        Set(ByVal value As Color)
+            _BackColorGradient = value
 
-        <Category("MetroGroupbox Properties")>
-        Public Property TitleColor As Color
-            Get
-                Return _TitleColor
-            End Get
-            Set(ByVal value As Color)
-                _TitleColor = value
+        End Set
+    End Property
 
-            End Set
-        End Property
-        <Category("MetroGroupbox Properties")>
-        Public Property TitleColorGradient As Color
-            Get
-                Return _TitleColorGradient
-            End Get
-            Set(ByVal value As Color)
-                _TitleColorGradient = value
+    <Category("MetroGroupbox Properties")>
+    Public Property BorderColor As Color
+        Get
+            Return _BorderColor
+        End Get
+        Set(ByVal value As Color)
+            _BorderColor = value
 
-            End Set
-        End Property
-        <Category("MetroGroupbox Properties")>
-        Public Property ForeColors As Color
-            Get
-                Return _ForeColor
-            End Get
-            Set(ByVal value As Color)
-                _ForeColor = value
+        End Set
+    End Property
 
-            End Set
-        End Property
+    <Category("MetroGroupbox Properties")>
+    Public Property TitleColor As Color
+        Get
+            Return _TitleColor
+        End Get
+        Set(ByVal value As Color)
+            _TitleColor = value
 
-        <Category("MetroGroupbox Properties")>
-        Public Property Border As Boolean
-            Get
-                Return _Border
-            End Get
-            Set(ByVal value As Boolean)
-                _Border = value
+        End Set
+    End Property
+    <Category("MetroGroupbox Properties")>
+    Public Property TitleColorGradient As Color
+        Get
+            Return _TitleColorGradient
+        End Get
+        Set(ByVal value As Color)
+            _TitleColorGradient = value
 
-            End Set
-        End Property
+        End Set
+    End Property
+    <Category("MetroGroupbox Properties")>
+    Public Property ForeColors As Color
+        Get
+            Return _ForeColor
+        End Get
+        Set(ByVal value As Color)
+            _ForeColor = value
 
-        <Browsable(False)>
-        <Category("MetroGroupbox Properties")>
-        Public Property Opacity As Integer
-            Get
-                Return _Opacity
-            End Get
-            Set(value As Integer)
-                Dim v As Integer = value
-                If v > 255 Then v = 255
-                _Opacity = v
-                Me.Invalidate()
-            End Set
-        End Property
-        Protected Overrides Sub ColorHook()
-            _BorderColor = Color.Black
-            _ForeColor = Color.White
-            _BackColor = Color.FromArgb(255, 80, 80, 80)
-            _BackColorGradient = Color.FromArgb(150, 64, 64, 64)
-            _TitleColor = Color.FromArgb(255, 32, 32, 32)
-            _TitleColorGradient = Color.FromArgb(255, 48, 48, 48)
-            _Opacity = 10
+        End Set
+    End Property
 
-        End Sub
+    <Category("MetroGroupbox Properties")>
+    Public Property Border As Boolean
+        Get
+            Return _Border
+        End Get
+        Set(ByVal value As Boolean)
+            _Border = value
 
-        Protected Overrides Sub PaintHook()
-            G.Clear(Color.FromArgb(_Opacity, _BackColor))
-            ' Dim BackBg As New SolidBrush(Color.FromArgb(_Opacity, _BackColor))
-            Dim BackBg As New LinearGradientBrush(New Rectangle(0, 0, Width, Height), _BackColor, _BackColorGradient, 90.0F)
-            G.FillRectangle(BackBg, New Rectangle(0, 0, Width, Height))
-            Dim TopBg As New LinearGradientBrush(New Rectangle(0, 0, Width, 25), _TitleColor, _TitleColorGradient, 90.0F)
-            G.FillRectangle(TopBg, New Rectangle(0, 0, Width, 25))
+        End Set
+    End Property
 
-            If _Border Then
-                G.DrawRectangle(New Pen(_BorderColor), New Rectangle(0, 0, Width, 25))
-                G.DrawRectangle(New Pen(_BorderColor), New Rectangle(0, 0, Width - 1, Height - 1))
-            Else
-            End If
-            G.DrawString(Text, Font, New SolidBrush(_ForeColor), New Point(5, 6))
+    <Browsable(False)>
+    <Category("MetroGroupbox Properties")>
+    Public Property Opacity As Integer
+        Get
+            Return _Opacity
+        End Get
+        Set(value As Integer)
+            Dim v As Integer = value
+            If v > 255 Then v = 255
+            _Opacity = v
+            Me.Invalidate()
+        End Set
+    End Property
+    Protected Overrides Sub ColorHook()
+        _BorderColor = Color.Black
+        _ForeColor = Color.White
+        _BackColor = Color.FromArgb(255, 80, 80, 80)
+        _BackColorGradient = Color.FromArgb(150, 64, 64, 64)
+        _TitleColor = Color.FromArgb(255, 32, 32, 32)
+        _TitleColorGradient = Color.FromArgb(255, 48, 48, 48)
+        _Opacity = 10
 
-        End Sub
+    End Sub
 
-    End Class
+    Protected Overrides Sub PaintHook()
+        G.Clear(Color.FromArgb(_Opacity, _BackColor))
+        ' Dim BackBg As New SolidBrush(Color.FromArgb(_Opacity, _BackColor))
+        Dim BackBg As New LinearGradientBrush(New Rectangle(0, 0, Width, Height), _BackColor, _BackColorGradient, 90.0F)
+        G.FillRectangle(BackBg, New Rectangle(0, 0, Width, Height))
+        Dim TopBg As New LinearGradientBrush(New Rectangle(0, 0, Width, 25), _TitleColor, _TitleColorGradient, 90.0F)
+        G.FillRectangle(TopBg, New Rectangle(0, 0, Width, 25))
+
+        If _Border Then
+            G.DrawRectangle(New Pen(_BorderColor), New Rectangle(0, 0, Width, 25))
+            G.DrawRectangle(New Pen(_BorderColor), New Rectangle(0, 0, Width - 1, Height - 1))
+        Else
+        End If
+        G.DrawString(Text, Font, New SolidBrush(_ForeColor), New Point(5, 6))
+
+    End Sub
 
 End Class
+
 
 #Region "BASE"
 Public MustInherit Class ContainerBase
