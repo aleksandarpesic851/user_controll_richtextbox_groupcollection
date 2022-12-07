@@ -15,8 +15,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MetroUC\MetroUC.vbproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="MetroRichtextboxEnhancedLib">
       <HintPath>..\..\MetroRichtextboxEnhancedLib\MetroRichtextboxEnhancedLib\bin\Debug\MetroRichtextboxEnhancedLib.dll</HintPath>
+    </Reference>
+    <Reference Include="test">
+      <HintPath>..\..\test\test\bin\Debug\net6.0-windows\test.dll</HintPath>
     </Reference>
   </ItemGroup>
 

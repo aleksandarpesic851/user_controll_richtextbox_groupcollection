@@ -4,7 +4,7 @@ Imports System.IO
 Imports System.Net.Http
 Imports System.Text
 
-Public Class MetroRichtextboxControl
+Public Class Richtextbox
     Private subSuperScript As Boolean = False
     Private originalFontSize As Integer = 0
     Private mRtfToHtml As New RTFtoHTML()
@@ -70,6 +70,8 @@ Public Class MetroRichtextboxControl
 
     Private Sub MyPaint(sender As Object, e As PaintEventArgs) Handles MyBase.Paint
         'Me.BorderStyle = BorderStyle.None
+        e.Graphics.SmoothingMode = SmoothingMode.AntiAlias
+
         Dim rect As Rectangle = Me.ClientRectangle 'Drawing Rounded Rectangle
         Using graphPath As GraphicsPath = GetPath(rect, BorderRadius)
             Using br As Brush = New SolidBrush(BorderColor)
@@ -567,7 +569,8 @@ Public Class MetroRichtextboxControl
                 End If
                 mRtfToHtml.rtf = rtbEditor.Rtf
                 Dim contentHtml As String = mRtfToHtml.html
-                My.Computer.FileSystem.WriteAllText(filePath, contentHtml, False, Encoding.UTF8)
+
+                File.WriteAllText(filePath, contentHtml)
             Catch ex As Exception
                 ' Do nothing on Exception
             End Try

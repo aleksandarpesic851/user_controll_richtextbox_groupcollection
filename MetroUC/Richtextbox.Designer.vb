@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class MetroRichtextboxControl
+Partial Class Richtextbox
     Inherits System.Windows.Forms.UserControl
 
     'UserControl overrides dispose to clean up the component list.
@@ -22,7 +22,7 @@ Partial Class MetroRichtextboxControl
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(MetroRichtextboxControl))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Richtextbox))
         Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
         Me.ToolStripButton_Cut = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripButton_Copy = New System.Windows.Forms.ToolStripButton()
@@ -366,7 +366,7 @@ Partial Class MetroRichtextboxControl
     End Sub
 
     Friend WithEvents ToolStrip1 As ToolStrip
-    Friend WithEvents rtbEditor As RichTextBox
+    Friend WithEvents rtbEditor As Windows.Forms.RichTextBox
     Friend WithEvents ToolStripButton_Cut As ToolStripButton
     Friend WithEvents ToolStripButton_Copy As ToolStripButton
     Friend WithEvents ToolStripButton_Paste As ToolStripButton

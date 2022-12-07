@@ -39,4 +39,51 @@
         Me.ResumeLayout(False)
 
     End Sub
+
+    Private Sub Button1_Click_1(sender As Object, e As EventArgs)
+        Dim newGroupbox As MetroUC.MetroGroupBox = New MetroUC.MetroGroupBox()
+        Me.Controls.Add(newGroupbox)
+    End Sub
+
+    Private Sub Button2_Click(sender As Object, e As EventArgs)
+
+    End Sub
+
+    Private Sub Button2_Click_1(sender As Object, e As EventArgs)
+
+    End Sub
+
+    Private Sub mypaint(sender As Object, e As PaintEventArgs) Handles MyBase.Paint
+
+    End Sub
+
+
+    Private Sub Panel1_ControlAdded(sender As Object, e As ControlEventArgs)
+
+    End Sub
+
+    Private Sub Panel1_ControlRemoved(sender As Object, e As ControlEventArgs)
+
+    End Sub
+
+    Private Sub Panel1_Scroll(sender As Object, e As ScrollEventArgs)
+
+    End Sub
+
+    Private Sub Panel1_SizeChanged(sender As Object, e As EventArgs)
+
+    End Sub
+
+    Private Sub Button1_Click_2(sender As Object, e As EventArgs)
+        GroupboxCollection1.AddGroupbox()
+    End Sub
+
+    Private Sub MetroGroupBox1_CollapseEvent(sender As Object)
+        MessageBox.Show("Collapse Event Fired")
+    End Sub
+
+    Private Sub MetroGroupBox1_ExpandEvent(sender As Object)
+        MessageBox.Show("Expand Event Fired")
+
+    End Sub
 End Class
