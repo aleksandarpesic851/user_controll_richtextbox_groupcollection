@@ -64,7 +64,7 @@ Partial Class Richtextbox
         'ToolStrip1
         '
         Me.ToolStrip1.BackColor = System.Drawing.SystemColors.Control
-        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripButton_Cut, Me.ToolStripButton_Copy, Me.ToolStripButton_Paste, Me.ToolStripButton_Undo, Me.ToolStripButton_Redo, Me.ToolStripSeparator1, Me.ToolStripButton_Font, Me.ToolStripButton_Color, Me.ToolStripButton_BG_Color, Me.ToolStripSeparator7, Me.ToolStripButton_Bold, Me.ToolStripButton_Italic, Me.ToolStripButton_Underline, Me.ToolStripButton_Strike, Me.ToolStripSeparator2, Me.ToolStripButton_Superscript, Me.ToolStripButton_Subscript, Me.ToolStripButton_Normal, Me.ToolStripSeparator3, Me.ToolStripButton_LeftAlign, Me.ToolStripButton_CenterAlign, Me.ToolStripButton_RightAlign, Me.ToolStripSeparator4, Me.ToolStripButton_Bullet, Me.ToolStripButton_List, Me.ToolStripSeparator5, Me.ToolStripButton_Picture, Me.ToolStripButton_Table, Me.ToolStripSeparator6, Me.ToolStripButton_Binary, Me.ToolStripButton_HTML, Me.ToolStripButton_Open})
+        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripButton_Open, Me.ToolStripButton_Binary, Me.ToolStripButton_HTML, Me.ToolStripSeparator6, Me.ToolStripButton_Cut, Me.ToolStripButton_Copy, Me.ToolStripButton_Paste, Me.ToolStripButton_Undo, Me.ToolStripButton_Redo, Me.ToolStripSeparator1, Me.ToolStripButton_Font, Me.ToolStripButton_Color, Me.ToolStripButton_BG_Color, Me.ToolStripSeparator7, Me.ToolStripButton_Bold, Me.ToolStripButton_Italic, Me.ToolStripButton_Underline, Me.ToolStripButton_Strike, Me.ToolStripSeparator2, Me.ToolStripButton_Superscript, Me.ToolStripButton_Subscript, Me.ToolStripButton_Normal, Me.ToolStripSeparator3, Me.ToolStripButton_LeftAlign, Me.ToolStripButton_CenterAlign, Me.ToolStripButton_RightAlign, Me.ToolStripSeparator4, Me.ToolStripButton_Bullet, Me.ToolStripButton_List, Me.ToolStripSeparator5, Me.ToolStripButton_Picture, Me.ToolStripButton_Table})
         Me.ToolStrip1.Location = New System.Drawing.Point(1, 1)
         Me.ToolStrip1.Name = "ToolStrip1"
         Me.ToolStrip1.Size = New System.Drawing.Size(783, 25)
@@ -349,13 +349,13 @@ Partial Class Richtextbox
         Me.OpenFileDialogForPicture.FileName = "OpenFileDialogForPicture"
         Me.OpenFileDialogForPicture.Title = "Select an Image"
         '
-        'MetroRichtextboxControl
+        'Richtextbox
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 15.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.Controls.Add(Me.rtbEditor)
         Me.Controls.Add(Me.ToolStrip1)
-        Me.Name = "MetroRichtextboxControl"
+        Me.Name = "Richtextbox"
         Me.Padding = New System.Windows.Forms.Padding(1)
         Me.Size = New System.Drawing.Size(785, 267)
         Me.ToolStrip1.ResumeLayout(False)

@@ -404,6 +404,74 @@ Public Class Richtextbox
         ToolStripButton_Bullet.Checked = rtbEditor.SelectionBullet
     End Sub
 
+    Private Sub ToolStripButton_List_Click(sender As Object, e As EventArgs) Handles ToolStripButton_List.Click
+        If rtbEditor.SelectedRtf.Contains("\pntext") Then
+            NumberedListToNormal()
+        Else
+            NormalToNumberedList()
+        End If
+    End Sub
+
+    Private Sub NumberedListToNormal()
+        Const RTF_START As String = "{\rtf1\ansi\ansicpg1252\deff0\deflang1033{\fonttbl{\f0\fnil\fcharset0 Calibri;}}" &
+                            "{\*\generator Msftedit 5.41.21.2510;}\viewkind4\uc1\pard\f0\fs18 "
+        Const RTF_ITEM_END As String = "\par"
+        Const RTF_END As String = "}"
+
+        Dim old_text As String =
+            rtbEditor.SelectedText.Replace(vbCrLf, vbLf)
+        Dim lines() As String = Split(old_text, vbLf)
+
+        ' Start the list.
+        Dim new_text As String = RTF_START
+
+        ' Add the other lines.
+        For i As Integer = 0 To lines.Length - 1
+            new_text &=
+                lines(i) & RTF_ITEM_END & vbCrLf
+        Next i
+
+        ' Remove the final vbCrLf.
+        new_text = new_text.Substring(0, new_text.Length - vbCrLf.Length)
+
+        ' End the list.
+        new_text &= RTF_END
+
+        ' Save the result.
+        rtbEditor.SelectedRtf = new_text
+    End Sub
+
+    Private Sub NormalToNumberedList()
+        Const RTF_START As String = "{\rtf1\ansi\ansicpg1252\deff0\deflang1033{\fonttbl{\f0\fnil\fcharset0 Calibri;}}" &
+                            "{\*\generator Msftedit 5.41.21.2510;}\viewkind4\uc1\pard{\pntext\f0 1.\tab}{\*\pn\pnlvlbody\pnf0\pnindent0\pnstart1\pndec{\pntxta.}}" &
+                            "\fi-360\li720\sa200\sl276\slmult1\lang9\f0\fs22 "
+        Const RTF_NUM_ITEM As String = "{\pntext\f0 @%@.\tab}"
+        Const RTF_NUM_ITEM_END As String = "\par"
+        Const RTF_END As String = "}"
+
+        Dim old_text As String =
+            rtbEditor.SelectedText.Replace(vbCrLf, vbLf)
+        Dim lines() As String = Split(old_text, vbLf)
+
+        ' Start the list.
+        Dim new_text As String = RTF_START & lines(0) & RTF_NUM_ITEM_END & vbCrLf
+
+        ' Add the other lines.
+        For i As Integer = 1 To lines.Length - 1
+            new_text &=
+                RTF_NUM_ITEM.Replace("@%@", (i + 1).ToString()) &
+                lines(i) & RTF_NUM_ITEM_END & vbCrLf
+        Next i
+
+        ' Remove the final vbCrLf.
+        new_text = new_text.Substring(0, new_text.Length - vbCrLf.Length)
+
+        ' End the list.
+        new_text &= RTF_END
+
+        ' Save the result.
+        rtbEditor.SelectedRtf = new_text
+    End Sub
 
     Private Sub ToolStripButton_Picture_Click(sender As Object, e As EventArgs) Handles ToolStripButton_Picture.Click
         With OpenFileDialogForPicture

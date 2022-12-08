@@ -6,6 +6,7 @@ Imports System.Runtime.InteropServices
 Imports System.Drawing.Imaging
 Imports System.Windows.Forms.VisualStyles.VisualStyleElement.Button
 
+'<Designer(GetType(NestedControlDesigner))>
 '<Designer(GetType(MetroGroupboxCollectionDesigner))>
 Public Class GroupboxCollection
     Inherits FlowLayoutPanel
@@ -15,6 +16,7 @@ Public Class GroupboxCollection
     ''' Collection Properties
     ''' </summary>
     Private mBorderColor As Color = Color.Black
+    Private mPadding As Integer = 5 + 1
     Public Property BorderColor As Color
         Get
             Return mBorderColor
@@ -32,7 +34,8 @@ Public Class GroupboxCollection
         End Get
         Set(value As Integer)
             mBorderThickness = value
-            Me.Padding = New Padding(value)
+            mPadding = mBorderThickness + 5
+            Me.Padding = New Padding(mPadding)
             Me.Invalidate()
         End Set
     End Property
@@ -49,37 +52,58 @@ Public Class GroupboxCollection
     End Property
 
     Private mGroupboxCount As Integer = 0
-    Public Property GroupboxCount As Integer
+    Public ReadOnly Property GroupboxCount As Integer
         Get
             Return mGroupboxCount
         End Get
-        Set(value As Integer)
-            Dim nOldCnt As Integer = mGroupboxCount
-            mGroupboxCount = value
-            If mGroupboxCount > nOldCnt Then
-                For i As Integer = nOldCnt To mGroupboxCount - 1
-                    AddGroupbox()
-                Next
-            End If
-            If mGroupboxCount < nOldCnt Then
-                For i As Integer = mGroupboxCount To nOldCnt - 1
-                    RemoveGroupboxAt(-1)
-                Next
-            End If
-        End Set
+        'Set(value As Integer)
+        '    Dim nOldCnt As Integer = mGroupboxCount
+        '    mGroupboxCount = value
+        '    If mGroupboxCount > nOldCnt Then
+        '        For i As Integer = nOldCnt To mGroupboxCount - 1
+        '            AddGroupbox()
+        '        Next
+        '    End If
+        '    If mGroupboxCount < nOldCnt Then
+        '        For i As Integer = mGroupboxCount To nOldCnt - 1
+        '            RemoveGroupboxAt(-1)
+        '        Next
+        '    End If
+        'End Set
     End Property
 
 #End Region
+    'Friend WithEvents pnlWorkingArea As MetroGroupBox
+
+    '<Category("Appearance"),
+    '    DesignerSerializationVisibility(DesignerSerializationVisibility.Content)>
+    'Public Property WorkingArea() As MetroGroupBox
+    '    Get
+    '        Return Me.pnlWorkingArea
+    '    End Get
+    '    Set(val As MetroGroupBox)
+    '        Me.pnlWorkingArea = val
+    '    End Set
+    'End Property
 
     Public Sub New()
-        SetStyle(ControlStyles.Opaque, True)
-        Dim rc As New ResizeableControl(Me)
-        Me.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
+        InitControl()
     End Sub
     Public Sub New(con As IContainer)
         con.Add(Me)
+        InitControl()
+    End Sub
+
+    Private Sub InitControl()
+        Me.SuspendLayout()
+        'Me.pnlWorkingArea = New MetroGroupBox()
+        Me.Size = New Size(GroupboxConsts.DEFAULT_COLLECTION_WIDTH, GroupboxConsts.DEFAULT_COLLECTION_HEIGHT)
+        SetStyle(ControlStyles.Opaque, True)
         Dim rc As New ResizeableControl(Me)
         Me.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
+        Me.Padding = New Padding(mPadding)
+        'Me.Controls.Add(pnlWorkingArea)
+        Me.ResumeLayout(False)
     End Sub
 
     Private Sub mypaint(sender As Object, e As PaintEventArgs) Handles MyBase.Paint
@@ -118,8 +142,14 @@ Public Class GroupboxCollection
 
 
     Public Sub AddGroupbox()
-        Me.Controls.Add(New MetroGroupBox())
+        Dim newControl As MetroGroupBox = New MetroGroupBox()
+        newControl.Width = GetGroupboxWidth()
+        Me.Controls.Add(newControl)
     End Sub
+
+    Private Function GetGroupboxWidth() As Integer
+        Return Me.Width - mPadding * 2 - 6
+    End Function
 
     Public Sub RemoveGroupbox(ByVal _control As Control)
         If Me.Controls.Contains(_control) Then
@@ -145,7 +175,7 @@ Public Class GroupboxCollection
         'Update location
         For i As Integer = 0 To nControlCnt - 1
             Me.Controls.Item(i).Location = New Point(0, nTopY)
-            Me.Controls.Item(i).Width = Me.Width
+            Me.Controls.Item(i).Width = GetGroupboxWidth()
             nTopY += Me.Controls.Item(i).Height + GROUPBOX_GAP
         Next
     End Sub
@@ -160,12 +190,18 @@ Public Class GroupboxCollection
     End Function
 End Class
 
+
+
+
+
+
+
 Public Class MetroGroupBox
     Inherits Panel
     Friend WithEvents titleLabel As Label = New Label()
     Public Event ExpandEvent(ByVal sender As Object)
     Public Event CollapseEvent(ByVal sender As Object)
-
+    Private nOriginHeight As Integer
     Private mExpanded As Boolean = True
 #Region "Groupbox Item Properties"
     ''' <summary>
@@ -274,10 +310,15 @@ Public Class MetroGroupBox
 #End Region
 
     Sub New()
+        InitControl(GroupboxConsts.DEFAULT_GROUPBOX_WIDTH)
+    End Sub
+
+    Private Sub InitControl(ByVal nWidth As Integer)
         Me.SuspendLayout()
         Me.SetStyle(ControlStyles.SupportsTransparentBackColor, True)
+        Me.Padding = New Padding(10)
         Me.DoubleBuffered = True
-        MyBase.Size = New Size(GroupboxConsts.DEFAULT_GROUPBOX_HEIGHT, GroupboxConsts.DEFAULT_GROUPBOX_HEIGHT)
+        Me.Size = New Size(nWidth, GroupboxConsts.DEFAULT_GROUPBOX_HEIGHT)
         Me.AutoScroll = True
         'ControlMode = True  -- ORIGIN
         Dim rc As New ResizeableControl(Me)
@@ -346,10 +387,11 @@ Public Class MetroGroupBox
             Else
                 Me.AutoSize = False
                 Me.AutoScroll = True
-                Me.Height = DEFAULT_GROUPBOX_HEIGHT
+                Me.Height = nOriginHeight
             End If
 
         Else
+            nOriginHeight = Me.Height
             Me.AutoSize = False
             Me.AutoScroll = False
             Me.Height = GetTitleHeight()
@@ -357,6 +399,10 @@ Public Class MetroGroupBox
     End Sub
 
 End Class
+
+
+
+
 
 #Region "BASE"
 Public Module DrawHelpers
@@ -602,6 +648,9 @@ Public Module GroupboxConsts
 
 #Region "Declarations"
     Public Const GROUPBOX_GAP As Integer = 20
+    Public Const DEFAULT_COLLECTION_WIDTH As Integer = 218
+    Public Const DEFAULT_COLLECTION_HEIGHT As Integer = 250
+
     Public Const DEFAULT_GROUPBOX_WIDTH As Integer = 200
     Public Const DEFAULT_GROUPBOX_HEIGHT As Integer = 100
     Public DEFAULT_GROUPBOX_TITLE_BACKGROUND_COLOR As Color = System.Drawing.SystemColors.GradientActiveCaption
@@ -729,153 +778,162 @@ End Class
 
 #End Region
 
+
+
+
 '#Region "GROUPBOX_COLLECTION_DESIGNER"
-'    <System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.Demand, Name:="FullTrust")>
-'    Public Class MetroGroupboxCollectionDesigner
-'        Inherits Windows.Forms.Design.ParentControlDesigner
+'<System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.Demand, Name:="FullTrust")>
+'Public Class MetroGroupboxCollectionDesigner
+'    Inherits Windows.Forms.Design.ParentControlDesigner
 
-'        Private lists As DesignerActionListCollection
+'    Private lists As DesignerActionListCollection
 
-'        'Use pull model to populate smart tag menu. 
-'        Public Overrides ReadOnly Property ActionLists() _
-'        As DesignerActionListCollection
-'            Get
-'                If lists Is Nothing Then
-'                    lists = New DesignerActionListCollection()
-'                    lists.Add(
-'                    New MetroGroupboxCollectionActionList(Me.Component))
-'                End If
-'                Return lists
-'            End Get
-'        End Property
-'    End Class
+'    Public Overrides Sub Initialize(component As System.ComponentModel.IComponent)
+'        MyBase.Initialize(component)
+'        Dim content As Panel = DirectCast(Me.Control, GroupboxCollection).WorkingArea
+'        EnableDesignMode(content, "WorkingArea")
+'    End Sub
 
-'    Public Class MetroGroupboxCollectionActionList
-'        Inherits DesignerActionList
-
-'        Private metroGroupboxCollection As GroupboxCollection
-
-'        Private designerActionUISvc As DesignerActionUIService = Nothing
-
-'        'The constructor associates the control  
-'        'with the smart tag list. 
-'        Public Sub New(ByVal component As IComponent)
-
-'            MyBase.New(component)
-'            Me.metroGroupboxCollection = component
-
-'            ' Cache a reference to DesignerActionUIService, so the 
-'            ' DesigneractionList can be refreshed. 
-'            Me.designerActionUISvc =
-'            CType(GetService(GetType(DesignerActionUIService)),
-'            DesignerActionUIService)
-
-'        End Sub
-
-'        'Helper method to retrieve control properties. Use of  
-'        ' GetProperties enables undo and menu updates to work properly. 
-'        Private Function GetPropertyByName(ByVal propName As String) _
-'        As PropertyDescriptor
-'            Dim prop As PropertyDescriptor
-'            prop = TypeDescriptor.GetProperties(metroGroupboxCollection)(propName)
-'            If prop Is Nothing Then
-'                Throw New ArgumentException(
-'                "Matching ColorLabel property not found!", propName)
-'            Else
-'                Return prop
+'    Use pull model To populate smart tag menu. 
+'    Public Overrides ReadOnly Property ActionLists() _
+'    As DesignerActionListCollection
+'        Get
+'            If lists Is Nothing Then
+'                lists = New DesignerActionListCollection()
+'                lists.Add(
+'                New MetroGroupboxCollectionActionList(Me.Component))
 '            End If
-'        End Function
+'            Return lists
+'        End Get
+'    End Property
+'End Class
 
-'        'Properties that are targets of DesignerActionPropertyItem entries. 
-'        Public Property BorderColor() As Color
-'            Get
-'                Return metroGroupboxCollection.BorderColor
-'            End Get
-'            Set(ByVal value As Color)
-'                GetPropertyByName("BorderColor").SetValue(metroGroupboxCollection, value)
-'            End Set
-'        End Property
+'Public Class MetroGroupboxCollectionActionList
+'    Inherits DesignerActionList
 
-'        Public Property BorderThickness() As Integer
-'            Get
-'                Return metroGroupboxCollection.BorderThickness
-'            End Get
-'            Set(ByVal value As Integer)
-'                GetPropertyByName("BorderThickness").SetValue(metroGroupboxCollection, value)
-'            End Set
-'        End Property
+'    Private metroGroupboxCollection As GroupboxCollection
 
-'        Public Property BorderRadius() As Integer
-'            Get
-'                Return metroGroupboxCollection.BorderRadius
-'            End Get
-'            Set(ByVal value As Integer)
-'                GetPropertyByName("BorderRadius").SetValue(metroGroupboxCollection, value)
-'            End Set
-'        End Property
+'    Private designerActionUISvc As DesignerActionUIService = Nothing
 
-'        Public Property GroupboxCount() As Integer
-'            Get
-'                Return metroGroupboxCollection.GroupboxCount
-'            End Get
-'            Set(ByVal value As Integer)
-'                GetPropertyByName("GroupboxCount").SetValue(metroGroupboxCollection, value)
-'            End Set
-'        End Property
+'    The constructor associates the control  
+'    With the smart tag list. 
+'    Public Sub New(ByVal component As IComponent)
 
-'        Public Sub AddGroupbox()
-'            'TODO: Add Groupbox Logic Here
-'        End Sub
-'        'Implementation of this virtual method creates smart tag   
-'        ' items, associates their targets, and collects into list. 
-'        Public Overrides Function GetSortedActionItems() _
-'        As DesignerActionItemCollection
-'            Dim items As New DesignerActionItemCollection()
+'        MyBase.New(component)
+'        Me.metroGroupboxCollection = component
 
-'            'Define static section header entries.
-'            items.Add(New DesignerActionHeaderItem("Appearance"))
-'            items.Add(New DesignerActionHeaderItem("Behavior"))
-'            items.Add(New DesignerActionHeaderItem("Information"))
+'        Cache a reference To DesignerActionUIService, so the 
+'         DesignerActionList can be refreshed. 
+'        Me.designerActionUISvc =
+'        CType(GetService(GetType(DesignerActionUIService)),
+'        DesignerActionUIService)
 
-'            items.Add(
-'            New DesignerActionPropertyItem(
-'            "BorderColor",
-'            "Border Color",
-'            "Appearance",
-'            "Selects the border color."))
+'    End Sub
 
-'            items.Add(
-'            New DesignerActionPropertyItem(
-'            "BorderThickness",
-'            "Border Thickness",
-'            "Appearance",
-'            "Inserts the border thickness."))
+'    Helper method To retrieve control properties. Use Of  
+'     GetProperties enables undo And menu updates To work properly. 
+'    Private Function GetPropertyByName(ByVal propName As String) _
+'    As PropertyDescriptor
+'        Dim prop As PropertyDescriptor
+'        prop = TypeDescriptor.GetProperties(metroGroupboxCollection)(propName)
+'        If prop Is Nothing Then
+'            Throw New ArgumentException(
+'            "Matching ColorLabel property not found!", propName)
+'        Else
+'            Return prop
+'        End If
+'    End Function
 
-'            items.Add(
-'            New DesignerActionPropertyItem(
-'            "BorderRadius",
-'            "Border Radius",
-'            "Appearance",
-'            "Inserts the border corner radius."))
+'    Properties that are targets Of DesignerActionPropertyItem entries. 
+'    Public Property BorderColor() As Color
+'        Get
+'            Return metroGroupboxCollection.BorderColor
+'        End Get
+'        Set(ByVal value As Color)
+'            GetPropertyByName("BorderColor").SetValue(metroGroupboxCollection, value)
+'        End Set
+'    End Property
 
-'            'This next method item is also added to the context menu  
-'            ' (as a designer verb).
-'            items.Add(
-'            New DesignerActionMethodItem(
-'            Me,
-'            "AddGroupbox",
-'            "Add Groupbox",
-'            "Behavior",
-'            "Add new groupbox.",
-'            True))
+'    Public Property BorderThickness() As Integer
+'        Get
+'            Return metroGroupboxCollection.BorderThickness
+'        End Get
+'        Set(ByVal value As Integer)
+'            GetPropertyByName("BorderThickness").SetValue(metroGroupboxCollection, value)
+'        End Set
+'    End Property
 
-'            'Create entries for static Information section. 
-'            items.Add(
-'            New DesignerActionTextItem(
-'            Convert.ToString(GroupboxCount),
-'            "Information"))
-'            Return items
-'        End Function
+'    Public Property BorderRadius() As Integer
+'        Get
+'            Return metroGroupboxCollection.BorderRadius
+'        End Get
+'        Set(ByVal value As Integer)
+'            GetPropertyByName("BorderRadius").SetValue(metroGroupboxCollection, value)
+'        End Set
+'    End Property
 
-'    End Class
+'    Public Property GroupboxCount() As Integer
+'        Get
+'            Return metroGroupboxCollection.GroupboxCount
+'        End Get
+'        Set(ByVal value As Integer)
+'            GetPropertyByName("GroupboxCount").SetValue(metroGroupboxCollection, value)
+'        End Set
+'    End Property
+
+'    Public Sub AddGroupbox()
+'TODO:   Add GroupBox Logic Here
+'    End Sub
+'    Implementation of this virtual method creates smart tag   
+'     items, associates their targets, And collects into list. 
+'    Public Overrides Function GetSortedActionItems() _
+'    As DesignerActionItemCollection
+'        Dim items As New DesignerActionItemCollection()
+
+'        Define static section header entries.
+'        items.Add(New DesignerActionHeaderItem("Appearance"))
+'        items.Add(New DesignerActionHeaderItem("Behavior"))
+'        items.Add(New DesignerActionHeaderItem("Information"))
+
+'        items.Add(
+'        New DesignerActionPropertyItem(
+'        "BorderColor",
+'        "Border Color",
+'        "Appearance",
+'        "Selects the border color."))
+
+'        items.Add(
+'        New DesignerActionPropertyItem(
+'        "BorderThickness",
+'        "Border Thickness",
+'        "Appearance",
+'        "Inserts the border thickness."))
+
+'        items.Add(
+'        New DesignerActionPropertyItem(
+'        "BorderRadius",
+'        "Border Radius",
+'        "Appearance",
+'        "Inserts the border corner radius."))
+
+'        This next method item Is also added to the context menu  
+'         (as a designer verb).
+'        items.Add(
+'        New DesignerActionMethodItem(
+'        Me,
+'        "AddGroupbox",
+'        "Add Groupbox",
+'        "Behavior",
+'        "Add new groupbox.",
+'        True))
+
+'        Create entries for static Information section. 
+'        items.Add(
+'        New DesignerActionTextItem(
+'        Convert.ToString(GroupboxCount),
+'        "Information"))
+'        Return items
+'    End Function
+
+'End Class
 '#End Region
