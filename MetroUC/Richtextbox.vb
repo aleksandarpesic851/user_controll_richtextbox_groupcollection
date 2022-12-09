@@ -3,6 +3,7 @@ Imports System.Drawing.Drawing2D
 Imports System.IO
 Imports System.Net.Http
 Imports System.Text
+Imports System.Xml
 
 Public Class Richtextbox
     Private subSuperScript As Boolean = False
@@ -593,28 +594,55 @@ Public Class Richtextbox
     End Sub
 
     Private Sub ToolStripButton_Open_Click(sender As Object, e As EventArgs) Handles ToolStripButton_Open.Click
+        'Dim openFileDlg As New OpenFileDialog()
+
+        '' Initialize the OpenFileDialog to look for RTF files.
+        'openFileDlg.DefaultExt = "*.rtf"
+        'openFileDlg.Filter = "RTF Files|*.rtf"
+
+        '' Determine whether the user selected a file from the OpenFileDialog.
+        'If (openFileDlg.ShowDialog() = System.Windows.Forms.DialogResult.OK) _
+        '    And (openFileDlg.FileName.Length > 0) Then
+
+        '    ' Load the contents of the file into the RichTextBox.
+        '    rtbEditor.LoadFile(openFileDlg.FileName)
+        'End If
+
         Dim openFileDlg As New OpenFileDialog()
 
         ' Initialize the OpenFileDialog to look for RTF files.
-        openFileDlg.DefaultExt = "*.rtf"
-        openFileDlg.Filter = "RTF Files|*.rtf"
+        openFileDlg.DefaultExt = "*.dat"
+        openFileDlg.Filter = "Binary Data Files|*.dat"
 
         ' Determine whether the user selected a file from the OpenFileDialog.
         If (openFileDlg.ShowDialog() = System.Windows.Forms.DialogResult.OK) _
             And (openFileDlg.FileName.Length > 0) Then
-
-            ' Load the contents of the file into the RichTextBox.
-            rtbEditor.LoadFile(openFileDlg.FileName)
+            Dim contentData As Byte() = File.ReadAllBytes(openFileDlg.FileName)
+            rtbEditor.Rtf = System.Text.Encoding.Default.GetString(contentData)
         End If
+
     End Sub
 
     Private Sub ToolStripButton_Binary_Click(sender As Object, e As EventArgs) Handles ToolStripButton_Binary.Click
+        'Dim Save As New SaveFileDialog()
+        'Save.Filter = "Rich Text Document (*.rtf)|*.rtf"
+        'Save.CheckPathExists = True
+        'If Save.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
+        '    Try
+        '        rtbEditor.SaveFile(Save.FileName)
+        '        Me.Text = Save.FileName
+        '    Catch ex As Exception
+        '        ' Do nothing on Exception
+        '    End Try
+        'End If
         Dim Save As New SaveFileDialog()
-        Save.Filter = "Rich Text Document (*.rtf)|*.rtf"
+        Save.Filter = "Binary Data File (*.dat)|*.dat"
         Save.CheckPathExists = True
         If Save.ShowDialog(Me) = Windows.Forms.DialogResult.OK Then
             Try
-                rtbEditor.SaveFile(Save.FileName)
+                Dim contentData As Byte() = System.Text.Encoding.Default.GetBytes(rtbEditor.Rtf)
+                File.WriteAllBytes(Save.FileName, contentData)
+                'rtbEditor.SaveFile(Save.FileName)
                 Me.Text = Save.FileName
             Catch ex As Exception
                 ' Do nothing on Exception

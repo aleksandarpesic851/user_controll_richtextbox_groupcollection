@@ -24,6 +24,10 @@ Partial Class Richtextbox
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Richtextbox))
         Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
+        Me.ToolStripButton_Open = New System.Windows.Forms.ToolStripButton()
+        Me.ToolStripButton_Binary = New System.Windows.Forms.ToolStripButton()
+        Me.ToolStripButton_HTML = New System.Windows.Forms.ToolStripButton()
+        Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripButton_Cut = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripButton_Copy = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripButton_Paste = New System.Windows.Forms.ToolStripButton()
@@ -52,10 +56,6 @@ Partial Class Richtextbox
         Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripButton_Picture = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripButton_Table = New System.Windows.Forms.ToolStripButton()
-        Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator()
-        Me.ToolStripButton_Binary = New System.Windows.Forms.ToolStripButton()
-        Me.ToolStripButton_HTML = New System.Windows.Forms.ToolStripButton()
-        Me.ToolStripButton_Open = New System.Windows.Forms.ToolStripButton()
         Me.rtbEditor = New System.Windows.Forms.RichTextBox()
         Me.OpenFileDialogForPicture = New System.Windows.Forms.OpenFileDialog()
         Me.ToolStrip1.SuspendLayout()
@@ -67,9 +67,41 @@ Partial Class Richtextbox
         Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripButton_Open, Me.ToolStripButton_Binary, Me.ToolStripButton_HTML, Me.ToolStripSeparator6, Me.ToolStripButton_Cut, Me.ToolStripButton_Copy, Me.ToolStripButton_Paste, Me.ToolStripButton_Undo, Me.ToolStripButton_Redo, Me.ToolStripSeparator1, Me.ToolStripButton_Font, Me.ToolStripButton_Color, Me.ToolStripButton_BG_Color, Me.ToolStripSeparator7, Me.ToolStripButton_Bold, Me.ToolStripButton_Italic, Me.ToolStripButton_Underline, Me.ToolStripButton_Strike, Me.ToolStripSeparator2, Me.ToolStripButton_Superscript, Me.ToolStripButton_Subscript, Me.ToolStripButton_Normal, Me.ToolStripSeparator3, Me.ToolStripButton_LeftAlign, Me.ToolStripButton_CenterAlign, Me.ToolStripButton_RightAlign, Me.ToolStripSeparator4, Me.ToolStripButton_Bullet, Me.ToolStripButton_List, Me.ToolStripSeparator5, Me.ToolStripButton_Picture, Me.ToolStripButton_Table})
         Me.ToolStrip1.Location = New System.Drawing.Point(1, 1)
         Me.ToolStrip1.Name = "ToolStrip1"
-        Me.ToolStrip1.Size = New System.Drawing.Size(783, 25)
+        Me.ToolStrip1.Size = New System.Drawing.Size(632, 25)
         Me.ToolStrip1.TabIndex = 0
         Me.ToolStrip1.Text = "ToolStrip1"
+        '
+        'ToolStripButton_Open
+        '
+        Me.ToolStripButton_Open.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.ToolStripButton_Open.Image = CType(resources.GetObject("ToolStripButton_Open.Image"), System.Drawing.Image)
+        Me.ToolStripButton_Open.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.ToolStripButton_Open.Name = "ToolStripButton_Open"
+        Me.ToolStripButton_Open.Size = New System.Drawing.Size(23, 22)
+        Me.ToolStripButton_Open.Text = "Open"
+        '
+        'ToolStripButton_Binary
+        '
+        Me.ToolStripButton_Binary.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.ToolStripButton_Binary.Image = CType(resources.GetObject("ToolStripButton_Binary.Image"), System.Drawing.Image)
+        Me.ToolStripButton_Binary.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.ToolStripButton_Binary.Name = "ToolStripButton_Binary"
+        Me.ToolStripButton_Binary.Size = New System.Drawing.Size(23, 22)
+        Me.ToolStripButton_Binary.Text = "Save as Binary"
+        '
+        'ToolStripButton_HTML
+        '
+        Me.ToolStripButton_HTML.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.ToolStripButton_HTML.Image = CType(resources.GetObject("ToolStripButton_HTML.Image"), System.Drawing.Image)
+        Me.ToolStripButton_HTML.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.ToolStripButton_HTML.Name = "ToolStripButton_HTML"
+        Me.ToolStripButton_HTML.Size = New System.Drawing.Size(23, 22)
+        Me.ToolStripButton_HTML.Text = "Save as HTML"
+        '
+        'ToolStripSeparator6
+        '
+        Me.ToolStripSeparator6.Name = "ToolStripSeparator6"
+        Me.ToolStripSeparator6.Size = New System.Drawing.Size(6, 25)
         '
         'ToolStripButton_Cut
         '
@@ -302,45 +334,13 @@ Partial Class Richtextbox
         Me.ToolStripButton_Table.Size = New System.Drawing.Size(23, 22)
         Me.ToolStripButton_Table.Text = "Table"
         '
-        'ToolStripSeparator6
-        '
-        Me.ToolStripSeparator6.Name = "ToolStripSeparator6"
-        Me.ToolStripSeparator6.Size = New System.Drawing.Size(6, 25)
-        '
-        'ToolStripButton_Binary
-        '
-        Me.ToolStripButton_Binary.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.ToolStripButton_Binary.Image = CType(resources.GetObject("ToolStripButton_Binary.Image"), System.Drawing.Image)
-        Me.ToolStripButton_Binary.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.ToolStripButton_Binary.Name = "ToolStripButton_Binary"
-        Me.ToolStripButton_Binary.Size = New System.Drawing.Size(23, 22)
-        Me.ToolStripButton_Binary.Text = "Save as Binary"
-        '
-        'ToolStripButton_HTML
-        '
-        Me.ToolStripButton_HTML.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.ToolStripButton_HTML.Image = CType(resources.GetObject("ToolStripButton_HTML.Image"), System.Drawing.Image)
-        Me.ToolStripButton_HTML.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.ToolStripButton_HTML.Name = "ToolStripButton_HTML"
-        Me.ToolStripButton_HTML.Size = New System.Drawing.Size(23, 22)
-        Me.ToolStripButton_HTML.Text = "Save as HTML"
-        '
-        'ToolStripButton_Open
-        '
-        Me.ToolStripButton_Open.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.ToolStripButton_Open.Image = CType(resources.GetObject("ToolStripButton_Open.Image"), System.Drawing.Image)
-        Me.ToolStripButton_Open.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.ToolStripButton_Open.Name = "ToolStripButton_Open"
-        Me.ToolStripButton_Open.Size = New System.Drawing.Size(23, 22)
-        Me.ToolStripButton_Open.Text = "Open"
-        '
         'rtbEditor
         '
         Me.rtbEditor.AllowDrop = True
         Me.rtbEditor.Dock = System.Windows.Forms.DockStyle.Fill
         Me.rtbEditor.Location = New System.Drawing.Point(1, 26)
         Me.rtbEditor.Name = "rtbEditor"
-        Me.rtbEditor.Size = New System.Drawing.Size(783, 240)
+        Me.rtbEditor.Size = New System.Drawing.Size(632, 240)
         Me.rtbEditor.TabIndex = 1
         Me.rtbEditor.Text = ""
         '
@@ -357,7 +357,7 @@ Partial Class Richtextbox
         Me.Controls.Add(Me.ToolStrip1)
         Me.Name = "Richtextbox"
         Me.Padding = New System.Windows.Forms.Padding(1)
-        Me.Size = New System.Drawing.Size(785, 267)
+        Me.Size = New System.Drawing.Size(634, 267)
         Me.ToolStrip1.ResumeLayout(False)
         Me.ToolStrip1.PerformLayout()
         Me.ResumeLayout(False)

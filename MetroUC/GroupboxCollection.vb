@@ -1,29 +1,32 @@
-﻿Imports System.IO
+﻿Imports System.Drawing
+Imports System.IO
 Imports System.ComponentModel
-Imports System.ComponentModel.Design
 Imports System.Drawing.Drawing2D
 Imports System.Runtime.InteropServices
 Imports System.Drawing.Imaging
 Imports System.Windows.Forms.VisualStyles.VisualStyleElement.Button
+Imports System.Windows.Forms.VisualStyles.VisualStyleElement
+Imports System.Windows.Forms.VisualStyles.VisualStyleElement.Status
+Imports Microsoft.DotNet.DesignTools.Designers
 
 '<Designer(GetType(NestedControlDesigner))>
-'<Designer(GetType(MetroGroupboxCollectionDesigner))>
+<Designer(GetType(MetroGroupboxCollectionDesigner))>
 Public Class GroupboxCollection
-    Inherits FlowLayoutPanel
+    Inherits Panel
 
 #Region "Collection Properties"
     ''' <summary>
     ''' Collection Properties
     ''' </summary>
     Private mBorderColor As Color = Color.Black
-    Private mPadding As Integer = 5 + 1
+    Private mPadding As Integer = DEFAULT_GROUPBOX_BORDER_THICKNESS + 5
     Public Property BorderColor As Color
         Get
             Return mBorderColor
         End Get
         Set(value As Color)
             mBorderColor = value
-            Me.Invalidate()
+            Me.Refresh()
         End Set
     End Property
 
@@ -36,7 +39,7 @@ Public Class GroupboxCollection
             mBorderThickness = value
             mPadding = mBorderThickness + 5
             Me.Padding = New Padding(mPadding)
-            Me.Invalidate()
+            Me.Refresh()
         End Set
     End Property
 
@@ -73,18 +76,18 @@ Public Class GroupboxCollection
     End Property
 
 #End Region
-    'Friend WithEvents pnlWorkingArea As MetroGroupBox
+    Friend WithEvents pnlWorkingArea As FlowLayoutPanel
 
-    '<Category("Appearance"),
-    '    DesignerSerializationVisibility(DesignerSerializationVisibility.Content)>
-    'Public Property WorkingArea() As MetroGroupBox
-    '    Get
-    '        Return Me.pnlWorkingArea
-    '    End Get
-    '    Set(val As MetroGroupBox)
-    '        Me.pnlWorkingArea = val
-    '    End Set
-    'End Property
+    <Category("Appearance"),
+        DesignerSerializationVisibility(DesignerSerializationVisibility.Content)>
+    Public Property WorkingArea() As FlowLayoutPanel
+        Get
+            Return Me.pnlWorkingArea
+        End Get
+        Set(val As FlowLayoutPanel)
+            Me.pnlWorkingArea = val
+        End Set
+    End Property
 
     Public Sub New()
         InitControl()
@@ -96,94 +99,136 @@ Public Class GroupboxCollection
 
     Private Sub InitControl()
         Me.SuspendLayout()
-        'Me.pnlWorkingArea = New MetroGroupBox()
+        Me.DoubleBuffered = True
         Me.Size = New Size(GroupboxConsts.DEFAULT_COLLECTION_WIDTH, GroupboxConsts.DEFAULT_COLLECTION_HEIGHT)
-        SetStyle(ControlStyles.Opaque, True)
         Dim rc As New ResizeableControl(Me)
-        Me.FlowDirection = System.Windows.Forms.FlowDirection.TopDown
         Me.Padding = New Padding(mPadding)
+
+        pnlWorkingArea = New FlowLayoutPanel()
+        Me.Controls.Add(pnlWorkingArea)
+        pnlWorkingArea.Size = Me.Size
+        pnlWorkingArea.Location = New Point(0, 0)
+        pnlWorkingArea.AutoScroll = True
+        pnlWorkingArea.Dock = DockStyle.Fill
+        pnlWorkingArea.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight
         'Me.Controls.Add(pnlWorkingArea)
         Me.ResumeLayout(False)
     End Sub
 
     Private Sub mypaint(sender As Object, e As PaintEventArgs) Handles MyBase.Paint
-        e.Graphics.Clear(Color.White)
+        'e.Graphics.Clear(Color.FromArgb(255, Color.White))
+        MyBase.BackColor = Color.FromArgb(0, Color.White)
         e.Graphics.SmoothingMode = SmoothingMode.AntiAlias
-        Dim rect As Rectangle = New Rectangle(0, 0, Width, Height) 'Drawing Rounded Rectangle
-        rect.X = rect.X + BorderThickness / 2
-        rect.Y = rect.Y + BorderThickness / 2
-        rect.Width -= BorderThickness
-        rect.Height -= BorderThickness
+        Dim rect As Rectangle = New Rectangle(0, 0, Width, Height)
+        Dim borderPen As Pen = New Pen(BorderColor, BorderThickness)
+        Dim backBrush As SolidBrush = New SolidBrush(Me.BackColor)
+        DrawHelpers.DrawRoundedRectangle(e.Graphics, rect, BorderRadius, borderPen, backBrush)
 
-        'Draw Border
-        If BorderRadius > 0 Then
-            Dim graphPath As GraphicsPath = DrawHelpers.RoundRectangle(rect, BorderRadius)
-            e.Graphics.DrawPath(New Pen(BorderColor, BorderThickness), graphPath)
-        Else
-            e.Graphics.DrawRectangle(New Pen(BorderColor, BorderThickness), rect)
-        End If
+        'Dim rectView As Rectangle = New Rectangle(0, 0, Width, Height) 'Drawing Rounded Rectangle
+
+        'e.Graphics.ExcludeClip(rectView)
+    End Sub
+    Private Sub My_Scroll(sender As Object, e As ScrollEventArgs) Handles pnlWorkingArea.Scroll
+        Me.Invalidate()
     End Sub
 
-    Private Sub MyControlAdded(sender As Object, e As ControlEventArgs) Handles Me.ControlAdded
+    Private Sub MyControlAdded(sender As Object, e As ControlEventArgs) Handles pnlWorkingArea.ControlAdded
         If IsValidControl(e.Control) Then
-            mGroupboxCount = Me.Controls.Count
+            mGroupboxCount = pnlWorkingArea.Controls.Count
+            e.Control.Width = GetGroupboxWidth()
             UpdateLayout()
         End If
     End Sub
 
-    Private Sub MyControlRemoved(sender As Object, e As ControlEventArgs) Handles Me.ControlRemoved
-        mGroupboxCount = Me.Controls.Count
+    Private Sub MyControlRemoved(sender As Object, e As ControlEventArgs) Handles pnlWorkingArea.ControlRemoved
+        mGroupboxCount = pnlWorkingArea.Controls.Count
         UpdateLayout()
     End Sub
 
-    Private Sub MySizeChanged(sender As Object, e As EventArgs) Handles Me.SizeChanged
+    Private Sub MySizeChanged(sender As Object, e As EventArgs) Handles pnlWorkingArea.SizeChanged
         UpdateLayout()
     End Sub
 
 
-    Public Sub AddGroupbox()
+    Public Function AddGroupbox() As MetroGroupBox
         Dim newControl As MetroGroupBox = New MetroGroupBox()
-        newControl.Width = GetGroupboxWidth()
-        Me.Controls.Add(newControl)
+        'newControl.Width = GetGroupboxWidth()
+        pnlWorkingArea.Controls.Add(newControl)
+        Return newControl
+    End Function
+
+    Public Sub AddGroupbox(ByRef _control As MetroGroupBox)
+        '_control.Width = GetGroupboxWidth()
+        pnlWorkingArea.Controls.Add(_control)
     End Sub
 
     Private Function GetGroupboxWidth() As Integer
-        Return Me.Width - mPadding * 2 - 6
+        Dim nWidth As Integer
+        nWidth = Me.Width - mPadding * 2 - pnlWorkingArea.Margin.Left - pnlWorkingArea.Margin.Right
+        If pnlWorkingArea.VerticalScroll.Visible Then
+            nWidth -= System.Windows.Forms.SystemInformation.VerticalScrollBarWidth
+        End If
+        For Each _control As MetroGroupBox In pnlWorkingArea.Controls
+            If _control.GroupboxHeightOption = HeightOptions.Expanable Then
+                nWidth = Math.Max(nWidth, _control.Width)
+            End If
+        Next
+        Return nWidth
     End Function
 
     Public Sub RemoveGroupbox(ByVal _control As Control)
-        If Me.Controls.Contains(_control) Then
-            Me.Controls.Remove(_control)
+        If pnlWorkingArea.Controls.Contains(_control) Then
+            pnlWorkingArea.Controls.Remove(_control)
         End If
     End Sub
     ' if idx is -1, remove last one
     Public Sub RemoveGroupboxAt(ByVal idx As Integer)
         If idx < 0 Then
-            If Me.Controls.Count > 0 Then
-                Me.Controls.RemoveAt(Me.Controls.Count - 1)
+            If pnlWorkingArea.Controls.Count > 0 Then
+                pnlWorkingArea.Controls.RemoveAt(pnlWorkingArea.Controls.Count - 1)
             End If
         Else
-            If Me.Controls.Count > idx Then
-                Me.Controls.RemoveAt(idx)
+            If pnlWorkingArea.Controls.Count > idx Then
+                pnlWorkingArea.Controls.RemoveAt(idx)
             End If
         End If
     End Sub
 
     Private Sub UpdateLayout()
-        Dim nControlCnt As Integer = Me.Controls.Count
-        Dim nTopY As Integer = 0
+        Dim nControlCnt As Integer = pnlWorkingArea.Controls.Count
+        Dim nOffsetX As Integer = mPadding + 3 + pnlWorkingArea.Margin.Left
+        Dim nOffsetY As Integer = mPadding + 3 + pnlWorkingArea.Margin.Top
+        Dim nTopY As Integer = nOffsetX
         'Update location
         For i As Integer = 0 To nControlCnt - 1
-            Me.Controls.Item(i).Location = New Point(0, nTopY)
-            Me.Controls.Item(i).Width = GetGroupboxWidth()
-            nTopY += Me.Controls.Item(i).Height + GROUPBOX_GAP
+            pnlWorkingArea.Controls.Item(i).SuspendLayout()
         Next
+        Me.SuspendLayout()
+
+        Dim childGroupbox As MetroGroupBox
+        For i As Integer = 0 To nControlCnt - 1
+            childGroupbox = TryCast(pnlWorkingArea.Controls.Item(i), MetroGroupBox)
+            childGroupbox.Location = New Point(nOffsetY, nTopY)
+            If childGroupbox.AutoSize Then
+                childGroupbox.AutoSize = False
+                childGroupbox.Width = GetGroupboxWidth()
+                childGroupbox.AutoSize = True
+            Else
+                childGroupbox.Width = GetGroupboxWidth()
+            End If
+            nTopY += pnlWorkingArea.Controls.Item(i).Height + GROUPBOX_GAP
+        Next
+
+        For i As Integer = 0 To nControlCnt - 1
+            pnlWorkingArea.Controls.Item(i).ResumeLayout(False)
+        Next
+        Me.Refresh()
     End Sub
 
     Private Function IsValidControl(_control As Control) As Boolean
         If _control.GetType() IsNot GetType(MetroGroupBox) Then
-            MessageBox.Show("You can add only MetroGroupBox control.")
-            Me.Controls.Remove(_control)
+            'MessageBox.Show("You can add only MetroGroupBox control.")
+            pnlWorkingArea.Controls.Remove(_control)
             Return False
         End If
         Return True
@@ -198,7 +243,10 @@ End Class
 
 Public Class MetroGroupBox
     Inherits Panel
+    Friend WithEvents titleContainer As Panel = New Panel()
+    Friend WithEvents titleExpandMark As Label = New Label()
     Friend WithEvents titleLabel As Label = New Label()
+
     Public Event ExpandEvent(ByVal sender As Object)
     Public Event CollapseEvent(ByVal sender As Object)
     Private nOriginHeight As Integer
@@ -225,7 +273,8 @@ Public Class MetroGroupBox
         End Get
         Set(value As Color)
             mGroupboxTitleBackgroundColor = value
-            titleLabel.BackColor = value
+            'titleLabel.BackColor = value
+            titleContainer.BackColor = value
         End Set
     End Property
 
@@ -237,6 +286,7 @@ Public Class MetroGroupBox
         Set(value As Color)
             mGroupboxTitleTextColor = value
             titleLabel.ForeColor = value
+            titleExpandMark.ForeColor = value
         End Set
     End Property
 
@@ -249,10 +299,7 @@ Public Class MetroGroupBox
             mGroupboxTitleTextFont = value
             Me.titleLabel.Font = value
             Me.titleLabel.AutoSize = True
-            Dim nTitleHeight = Me.titleLabel.Height
-            Me.titleLabel.AutoSize = False
-            Me.titleLabel.Width = Me.Width
-            Me.titleLabel.Height = nTitleHeight
+            titleContainer.Height = GetTitleHeight()
         End Set
     End Property
 
@@ -263,6 +310,7 @@ Public Class MetroGroupBox
         End Get
         Set(value As Color)
             mGroupboxBorderColor = value
+            Me.Refresh()
         End Set
     End Property
 
@@ -273,7 +321,7 @@ Public Class MetroGroupBox
         End Get
         Set(value As Integer)
             mGroupboxBorderThickness = value
-            Me.Padding = New Padding(value)
+            Me.Refresh()
         End Set
     End Property
 
@@ -284,6 +332,7 @@ Public Class MetroGroupBox
         End Get
         Set(value As Integer)
             mGroupboxBorderRadius = value
+            Me.Refresh()
         End Set
     End Property
 
@@ -294,6 +343,10 @@ Public Class MetroGroupBox
         End Get
         Set(value As Boolean)
             mGroupboxEnableCollapsable = value
+            If Not mGroupboxEnableCollapsable Then
+                Expand()
+                Me.titleExpandMark.Text = ""
+            End If
         End Set
     End Property
 
@@ -314,68 +367,84 @@ Public Class MetroGroupBox
     End Sub
 
     Private Sub InitControl(ByVal nWidth As Integer)
+        Me.titleContainer.SuspendLayout()
         Me.SuspendLayout()
+
         Me.SetStyle(ControlStyles.SupportsTransparentBackColor, True)
-        Me.Padding = New Padding(10)
         Me.DoubleBuffered = True
         Me.Size = New Size(nWidth, GroupboxConsts.DEFAULT_GROUPBOX_HEIGHT)
         Me.AutoScroll = True
-        'ControlMode = True  -- ORIGIN
-        Dim rc As New ResizeableControl(Me)
-        'Me.titleLabel = New System.Windows.Forms.Label()
-        Me.Controls.Add(titleLabel)
-        Me.titleLabel.Dock = System.Windows.Forms.DockStyle.Top
-        Me.titleLabel.Location = New System.Drawing.Point(0, 0)
-        Me.titleLabel.Name = "titleLabel"
-        Me.titleLabel.TabIndex = 0
-        Me.titleLabel.Text = GroupboxTitleText
-        Me.titleLabel.BackColor = GroupboxTitleBackgroundColor
-        Me.titleLabel.ForeColor = GroupboxTitleTextColor
-        Me.titleLabel.Padding = New Padding(5)
-        Me.titleLabel.Font = GroupboxTitleTextFont
+
+        Me.Controls.Add(titleContainer)
+        Me.titleContainer.Controls.Add(Me.titleLabel)
+        Me.titleContainer.Controls.Add(Me.titleExpandMark)
+        Me.titleContainer.Location = New System.Drawing.Point(0, 0)
+        Me.titleContainer.BackColor = GroupboxTitleBackgroundColor
+        Me.titleContainer.Padding = New Padding(5)
+
+        Me.titleExpandMark.AutoSize = True
+        Me.titleExpandMark.Dock = System.Windows.Forms.DockStyle.Right
+        Me.titleExpandMark.Font = GroupboxTitleTextFont
+        Me.titleExpandMark.Text = "-"
+        Me.titleExpandMark.ForeColor = GroupboxTitleTextColor
+
         Me.titleLabel.AutoSize = True
-        Dim nTitleHeight = Me.titleLabel.Height
-        Me.titleLabel.AutoSize = False
-        Me.titleLabel.Width = Me.Width
-        Me.titleLabel.Height = nTitleHeight
+        Me.titleLabel.Dock = System.Windows.Forms.DockStyle.Left
+        Me.titleLabel.Font = GroupboxTitleTextFont
+        Me.titleLabel.Text = GroupboxTitleText
+        Me.titleLabel.ForeColor = GroupboxTitleTextColor
+
+        Me.titleContainer.Size = New System.Drawing.Size(nWidth, GetTitleHeight())
+
+        Me.titleContainer.ResumeLayout(False)
         Me.ResumeLayout(False)
+        'MessageBox.Show("Creaated")
+
     End Sub
 
     Private Sub mypaint(sender As Object, e As PaintEventArgs) Handles MyBase.Paint
-        e.Graphics.Clear(Color.White)
+        MyBase.BackColor = Color.FromArgb(0, Color.White)
         e.Graphics.SmoothingMode = SmoothingMode.AntiAlias
         Dim rect As Rectangle = New Rectangle(0, 0, Width, Height) 'Drawing Rounded Rectangle
-        rect.X = rect.X + GroupboxBorderThickness / 2
-        rect.Y = rect.Y + GroupboxBorderThickness / 2
-        rect.Width -= GroupboxBorderThickness
-        rect.Height -= GroupboxBorderThickness
-
-        'Draw Border
-        If GroupboxBorderRadius > 0 Then
-            Dim graphPath As GraphicsPath = DrawHelpers.RoundRectangle(rect, GroupboxBorderRadius)
-            e.Graphics.DrawPath(New Pen(GroupboxBorderColor, GroupboxBorderThickness), graphPath)
-        Else
-            e.Graphics.DrawRectangle(New Pen(GroupboxBorderColor, GroupboxBorderThickness), rect)
-        End If
+        Dim borderPen As Pen = New Pen(GroupboxBorderColor, GroupboxBorderThickness)
+        Dim backBrush As SolidBrush = New SolidBrush(Me.BackColor)
+        DrawHelpers.DrawRoundedRectangle(e.Graphics, rect, GroupboxBorderRadius, borderPen, backBrush)
     End Sub
 
     Private Function GetTitleHeight() As Integer
-        Return titleLabel.Height + GroupboxBorderThickness
+        Return titleLabel.Height + 5 * 2
     End Function
+    Private Sub My_Scroll(sender As Object, e As ScrollEventArgs) Handles Me.Scroll
+        Me.titleContainer.Location = New Point(0, 0)
+    End Sub
+    Private Sub My_SizeChanged(sender As Object, e As EventArgs) Handles Me.SizeChanged
+        Me.titleContainer.Size = New Size(Me.Width, GetTitleHeight)
+        Me.titleContainer.MaximumSize = New Size(Me.Width, GetTitleHeight)
+        'MessageBox.Show(Me.Size.ToString())
+    End Sub
 
-    Private Sub Title_Click(sender As Object, e As EventArgs) Handles titleLabel.Click
+    Private Sub My_Validated(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Validated
+        Me.titleContainer.Size = New Size(Me.Width, GetTitleHeight)
+    End Sub
+    Private Sub Title_Click(sender As Object, e As EventArgs) Handles titleContainer.Click
+        CollapseOrExpand()
+    End Sub
+    Private Sub TitleText_Click(sender As Object, e As EventArgs) Handles titleLabel.Click
+        CollapseOrExpand()
+    End Sub
+    Private Sub TitleMark_Click(sender As Object, e As EventArgs) Handles titleExpandMark.Click
+        CollapseOrExpand()
+    End Sub
+    Private Sub CollapseOrExpand()
         If GroupboxEnableCollapsable = False Then
             Return
         End If
 
         If mExpanded Then
-            mExpanded = False
-            RaiseEvent CollapseEvent(sender)
+            Collapse()
         Else
-            mExpanded = True
-            RaiseEvent ExpandEvent(sender)
+            Expand()
         End If
-        UpdateHeight()
     End Sub
 
     Private Sub UpdateHeight()
@@ -398,6 +467,27 @@ Public Class MetroGroupBox
         End If
     End Sub
 
+    Public Sub Expand()
+        If mExpanded Then
+            Return
+        End If
+        mExpanded = True
+        Me.titleExpandMark.Text = "-"
+        UpdateHeight()
+        RaiseEvent ExpandEvent(Me)
+        Me.Refresh()
+    End Sub
+
+    Public Sub Collapse()
+        If Not GroupboxEnableCollapsable Or Not mExpanded Then
+            Return
+        End If
+        mExpanded = False
+        Me.titleExpandMark.Text = "+"
+        UpdateHeight()
+        RaiseEvent CollapseEvent(Me)
+        Me.Refresh()
+    End Sub
 End Class
 
 
@@ -531,23 +621,30 @@ Public Module DrawHelpers
         End Using
     End Sub
 
-    Public Sub DrawRoundedRectangle(ByVal Graphics As Graphics, ByVal Bounds As Rectangle, ByVal Radius As Integer, ByVal Outline As Pen, ByVal Fill As LinearGradientBrush)
+    Public Sub DrawRoundedRectangle(ByVal Graphics As Graphics, ByVal Bounds As Rectangle, ByVal Radius As Integer, ByVal Outline As Pen, ByVal Fill As Brush)
         Dim Stroke As Integer = Convert.ToInt32(Math.Ceiling(Outline.Width))
-        Bounds = Rectangle.Inflate(Bounds, -Stroke, -Stroke)
+        Dim Offset As Integer = Convert.ToInt32(Math.Ceiling(Stroke / 2))
+        Bounds = Rectangle.Inflate(Bounds, -Offset, -Offset)
+
         Outline.EndCap = Outline.StartCap = LineCap.Round
-        Using Path As New GraphicsPath()
-            Path.AddLine(Bounds.X + Radius, Bounds.Y, Bounds.X + Bounds.Width - (Radius * 2), Bounds.Y)
-            Path.AddArc(Bounds.X + Bounds.Width - (Radius * 2), Bounds.Y, Radius * 2, Radius * 2, 270, 90)
-            Path.AddLine(Bounds.X + Bounds.Width, Bounds.Y + Radius, Bounds.X + Bounds.Width, Bounds.Y + Bounds.Height - (Radius * 2))
-            Path.AddArc(Bounds.X + Bounds.Width - (Radius * 2), Bounds.Y + Bounds.Height - (Radius * 2), Radius * 2, Radius * 2, 0, 90)
-            Path.AddLine(Bounds.X + Bounds.Width - (Radius * 2), Bounds.Y + Bounds.Height, Bounds.X + Radius, Bounds.Y + Bounds.Height)
-            Path.AddArc(Bounds.X, Bounds.Y + Bounds.Height - (Radius * 2), Radius * 2, Radius * 2, 90, 90)
-            Path.AddLine(Bounds.X, Bounds.Y + Bounds.Height - (Radius * 2), Bounds.X, Bounds.Y + Radius)
-            Path.AddArc(Bounds.X, Bounds.Y, Radius * 2, Radius * 2, 180, 90)
-            Path.CloseFigure()
-            Graphics.FillPath(Fill, Path)
-            Graphics.DrawPath(Outline, Path)
-        End Using
+        If Radius > 0 Then
+            Using Path As New GraphicsPath()
+                Path.AddLine(Bounds.X + Radius, Bounds.Y, Bounds.X + Bounds.Width - (Radius * 2), Bounds.Y)
+                Path.AddArc(Bounds.X + Bounds.Width - (Radius * 2), Bounds.Y, Radius * 2, Radius * 2, 270, 90)
+                Path.AddLine(Bounds.X + Bounds.Width, Bounds.Y + Radius, Bounds.X + Bounds.Width, Bounds.Y + Bounds.Height - (Radius * 2))
+                Path.AddArc(Bounds.X + Bounds.Width - (Radius * 2), Bounds.Y + Bounds.Height - (Radius * 2), Radius * 2, Radius * 2, 0, 90)
+                Path.AddLine(Bounds.X + Bounds.Width - (Radius * 2), Bounds.Y + Bounds.Height, Bounds.X + Radius, Bounds.Y + Bounds.Height)
+                Path.AddArc(Bounds.X, Bounds.Y + Bounds.Height - (Radius * 2), Radius * 2, Radius * 2, 90, 90)
+                Path.AddLine(Bounds.X, Bounds.Y + Bounds.Height - (Radius * 2), Bounds.X, Bounds.Y + Radius)
+                Path.AddArc(Bounds.X, Bounds.Y, Radius * 2, Radius * 2, 180, 90)
+                Path.CloseFigure()
+                'Graphics.FillPath(Fill, Path)
+                Graphics.DrawPath(Outline, Path)
+            End Using
+        Else
+            'Graphics.FillRectangle(Fill, Bounds)
+            Graphics.DrawRectangle(Outline, Bounds)
+        End If
     End Sub
 
     Public Sub FillGradientBeam(ByVal g As Graphics, ByVal Col1 As Color, ByVal Col2 As Color, ByVal rect As Rectangle, ByVal align As GradientAlignment)
@@ -729,7 +826,7 @@ Public Class ResizeableControl
         End Select
 
         If mMouseDown And mEdge <> EdgeEnum.None Then
-            'c.SuspendLayout()
+            c.SuspendLayout()
             Select Case mEdge
                 Case EdgeEnum.TopLeft
                     c.SetBounds(c.Left + e.X, c.Top + e.Y, c.Width, c.Height)
@@ -742,7 +839,7 @@ Public Class ResizeableControl
                 Case EdgeEnum.Bottom
                     c.SetBounds(c.Left, c.Top, c.Width, c.Height - (c.Height - e.Y))
             End Select
-            'c.ResumeLayout()
+            c.ResumeLayout()
             c.Refresh()
         Else
             Select Case True
@@ -782,31 +879,31 @@ End Class
 
 
 '#Region "GROUPBOX_COLLECTION_DESIGNER"
-'<System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.Demand, Name:="FullTrust")>
-'Public Class MetroGroupboxCollectionDesigner
-'    Inherits Windows.Forms.Design.ParentControlDesigner
+<System.Security.Permissions.PermissionSetAttribute(System.Security.Permissions.SecurityAction.Demand, Name:="FullTrust")>
+Public Class MetroGroupboxCollectionDesigner
+    Inherits ParentControlDesigner
 
-'    Private lists As DesignerActionListCollection
+    'Private lists As DesignerActionListCollection
 
-'    Public Overrides Sub Initialize(component As System.ComponentModel.IComponent)
-'        MyBase.Initialize(component)
-'        Dim content As Panel = DirectCast(Me.Control, GroupboxCollection).WorkingArea
-'        EnableDesignMode(content, "WorkingArea")
-'    End Sub
+    Public Overrides Sub Initialize(component As System.ComponentModel.IComponent)
+        MyBase.Initialize(component)
+        Dim content As Panel = DirectCast(Me.Control, GroupboxCollection).WorkingArea
+        EnableDesignMode(content, "WorkingArea")
+    End Sub
 
-'    Use pull model To populate smart tag menu. 
-'    Public Overrides ReadOnly Property ActionLists() _
-'    As DesignerActionListCollection
-'        Get
-'            If lists Is Nothing Then
-'                lists = New DesignerActionListCollection()
-'                lists.Add(
-'                New MetroGroupboxCollectionActionList(Me.Component))
-'            End If
-'            Return lists
-'        End Get
-'    End Property
-'End Class
+    'Use pull model To populate smart tag menu. 
+    'Public Overrides ReadOnly Property ActionLists() _
+    'As DesignerActionListCollection
+    '    Get
+    '        If lists Is Nothing Then
+    '            lists = New DesignerActionListCollection()
+    '            lists.Add(
+    '            New MetroGroupboxCollectionActionList(Me.Component))
+    '        End If
+    '        Return lists
+    '    End Get
+    'End Property
+End Class
 
 'Public Class MetroGroupboxCollectionActionList
 '    Inherits DesignerActionList
