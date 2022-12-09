@@ -9,7 +9,6 @@ Imports System.Windows.Forms.VisualStyles.VisualStyleElement
 Imports System.Windows.Forms.VisualStyles.VisualStyleElement.Status
 Imports Microsoft.DotNet.DesignTools.Designers
 
-'<Designer(GetType(NestedControlDesigner))>
 <Designer(GetType(MetroGroupboxCollectionDesigner))>
 Public Class GroupboxCollection
     Inherits Panel
@@ -162,14 +161,14 @@ Public Class GroupboxCollection
     End Sub
 
 
-    Public Function AddGroupbox() As MetroGroupBox
-        Dim newControl As MetroGroupBox = New MetroGroupBox()
+    Public Function AddGroupbox() As Groupbox
+        Dim newControl As Groupbox = New Groupbox()
         'newControl.Width = GetGroupboxWidth()
         pnlWorkingArea.Controls.Add(newControl)
         Return newControl
     End Function
 
-    Public Sub AddGroupbox(ByRef _control As MetroGroupBox)
+    Public Sub AddGroupbox(ByRef _control As Groupbox)
         '_control.Width = GetGroupboxWidth()
         pnlWorkingArea.Controls.Add(_control)
     End Sub
@@ -180,7 +179,7 @@ Public Class GroupboxCollection
         If pnlWorkingArea.VerticalScroll.Visible Then
             nWidth -= System.Windows.Forms.SystemInformation.VerticalScrollBarWidth
         End If
-        For Each _control As MetroGroupBox In pnlWorkingArea.Controls
+        For Each _control As Groupbox In pnlWorkingArea.Controls
             If _control.GroupboxHeightOption = HeightOptions.Expanable Then
                 nWidth = Math.Max(nWidth, _control.Width)
             End If
@@ -217,9 +216,9 @@ Public Class GroupboxCollection
         Next
         Me.SuspendLayout()
 
-        Dim childGroupbox As MetroGroupBox
+        Dim childGroupbox As Groupbox
         For i As Integer = 0 To nControlCnt - 1
-            childGroupbox = TryCast(pnlWorkingArea.Controls.Item(i), MetroGroupBox)
+            childGroupbox = TryCast(pnlWorkingArea.Controls.Item(i), Groupbox)
             If Not onlySize Then
                 childGroupbox.Location = New Point(nOffsetY, nTopY)
             End If
@@ -243,7 +242,7 @@ Public Class GroupboxCollection
     End Sub
 
     Private Function IsValidControl(_control As Control) As Boolean
-        If _control.GetType() IsNot GetType(MetroGroupBox) Then
+        If _control.GetType() IsNot GetType(Groupbox) Then
             'MessageBox.Show("You can add only MetroGroupBox control.")
             pnlWorkingArea.Controls.Remove(_control)
             Return False
@@ -252,259 +251,6 @@ Public Class GroupboxCollection
     End Function
 End Class
 
-
-
-
-
-
-
-Public Class MetroGroupBox
-    Inherits Panel
-    Friend WithEvents titleContainer As Panel = New Panel()
-    Friend WithEvents titleExpandMark As Label = New Label()
-    Friend WithEvents titleLabel As Label = New Label()
-
-    Public Event ExpandEvent(ByVal sender As Object)
-    Public Event CollapseEvent(ByVal sender As Object)
-    Private nOriginHeight As Integer
-    Private mExpanded As Boolean = True
-#Region "Groupbox Item Properties"
-    ''' <summary>
-    ''' Groupbox Items' Propertie
-    ''' </summary>
-    Private mGroupboxTitleText As String = GroupboxConsts.DEFAULT_GROUPBOX_TITLE_TEXT
-    Public Property GroupboxTitleText As String
-        Get
-            Return mGroupboxTitleText
-        End Get
-        Set(value As String)
-            mGroupboxTitleText = value
-            titleLabel.Text = value
-        End Set
-    End Property
-
-    Private mGroupboxTitleBackgroundColor As Color = GroupboxConsts.DEFAULT_GROUPBOX_TITLE_BACKGROUND_COLOR
-    Public Property GroupboxTitleBackgroundColor As Color
-        Get
-            Return mGroupboxTitleBackgroundColor
-        End Get
-        Set(value As Color)
-            mGroupboxTitleBackgroundColor = value
-            'titleLabel.BackColor = value
-            titleContainer.BackColor = value
-        End Set
-    End Property
-
-    Private mGroupboxTitleTextColor As Color = GroupboxConsts.DEFAULT_GROUPBOX_TITLE_TEXT_COLOR
-    Public Property GroupboxTitleTextColor As Color
-        Get
-            Return mGroupboxTitleTextColor
-        End Get
-        Set(value As Color)
-            mGroupboxTitleTextColor = value
-            titleLabel.ForeColor = value
-            titleExpandMark.ForeColor = value
-        End Set
-    End Property
-
-    Private mGroupboxTitleTextFont As Font = GroupboxConsts.DEFAULT_GROUPBOX_TITLE_FONT
-    Public Property GroupboxTitleTextFont As Font
-        Get
-            Return mGroupboxTitleTextFont
-        End Get
-        Set(value As Font)
-            mGroupboxTitleTextFont = value
-            Me.titleLabel.Font = value
-            Me.titleLabel.AutoSize = True
-            titleContainer.Height = GetTitleHeight()
-        End Set
-    End Property
-
-    Private mGroupboxBorderColor As Color = GroupboxConsts.DEFAULT_GROUPBOX_BORDER_COLOR
-    Public Property GroupboxBorderColor As Color
-        Get
-            Return mGroupboxBorderColor
-        End Get
-        Set(value As Color)
-            mGroupboxBorderColor = value
-            Me.Refresh()
-        End Set
-    End Property
-
-    Private mGroupboxBorderThickness As Integer = GroupboxConsts.DEFAULT_GROUPBOX_BORDER_THICKNESS
-    Public Property GroupboxBorderThickness As Integer
-        Get
-            Return mGroupboxBorderThickness
-        End Get
-        Set(value As Integer)
-            mGroupboxBorderThickness = value
-            Me.Refresh()
-        End Set
-    End Property
-
-    Private mGroupboxBorderRadius As Integer = GroupboxConsts.DEFAULT_GROUPBOX_BORDER_RADIUS
-    Public Property GroupboxBorderRadius As Integer
-        Get
-            Return mGroupboxBorderRadius
-        End Get
-        Set(value As Integer)
-            mGroupboxBorderRadius = value
-            Me.Refresh()
-        End Set
-    End Property
-
-    Private mGroupboxEnableCollapsable As Boolean = GroupboxConsts.DEFAULT_GROUPBOX_COLLAPSABLE
-    Public Property GroupboxEnableCollapsable As Boolean
-        Get
-            Return mGroupboxEnableCollapsable
-        End Get
-        Set(value As Boolean)
-            mGroupboxEnableCollapsable = value
-            If Not mGroupboxEnableCollapsable Then
-                Expand()
-                Me.titleExpandMark.Text = ""
-            End If
-        End Set
-    End Property
-
-    Private mGroupboxHeightOption As HeightOptions = GroupboxConsts.DEFAULT_GROUPBOX_HEIGHT_OPTION
-    Public Property GroupboxHeightOption As HeightOptions
-        Get
-            Return mGroupboxHeightOption
-        End Get
-        Set(value As HeightOptions)
-            mGroupboxHeightOption = value
-            UpdateHeight()
-        End Set
-    End Property
-#End Region
-
-    Sub New()
-        InitControl(GroupboxConsts.DEFAULT_GROUPBOX_WIDTH)
-    End Sub
-
-    Private Sub InitControl(ByVal nWidth As Integer)
-        Me.titleContainer.SuspendLayout()
-        Me.SuspendLayout()
-
-        Me.MinimumSize = New Size(DEFAULT_GROUPBOX_WIDTH, DEFAULT_GROUPBOX_HEIGHT)
-
-        Me.SetStyle(ControlStyles.SupportsTransparentBackColor, True)
-        Me.DoubleBuffered = True
-        Me.Size = New Size(nWidth, GroupboxConsts.DEFAULT_GROUPBOX_HEIGHT)
-        Me.AutoScroll = True
-
-        Me.Controls.Add(titleContainer)
-        Me.titleContainer.Controls.Add(Me.titleLabel)
-        Me.titleContainer.Controls.Add(Me.titleExpandMark)
-        Me.titleContainer.Location = New System.Drawing.Point(0, 0)
-        Me.titleContainer.BackColor = GroupboxTitleBackgroundColor
-        Me.titleContainer.Padding = New Padding(5)
-
-        Me.titleExpandMark.AutoSize = True
-        Me.titleExpandMark.Dock = System.Windows.Forms.DockStyle.Right
-        Me.titleExpandMark.Font = GroupboxTitleTextFont
-        Me.titleExpandMark.Text = "-"
-        Me.titleExpandMark.ForeColor = GroupboxTitleTextColor
-
-        Me.titleLabel.AutoSize = True
-        Me.titleLabel.Dock = System.Windows.Forms.DockStyle.Left
-        Me.titleLabel.Font = GroupboxTitleTextFont
-        Me.titleLabel.Text = GroupboxTitleText
-        Me.titleLabel.ForeColor = GroupboxTitleTextColor
-
-        Me.titleContainer.Size = New System.Drawing.Size(nWidth, GetTitleHeight())
-
-        Me.titleContainer.ResumeLayout(False)
-        Me.ResumeLayout(False)
-        'MessageBox.Show("Creaated")
-
-    End Sub
-
-    Private Sub mypaint(sender As Object, e As PaintEventArgs) Handles MyBase.Paint
-        MyBase.BackColor = Color.FromArgb(0, Color.White)
-        e.Graphics.SmoothingMode = SmoothingMode.AntiAlias
-        Dim rect As Rectangle = New Rectangle(0, 0, Width, Height) 'Drawing Rounded Rectangle
-        Dim borderPen As Pen = New Pen(GroupboxBorderColor, GroupboxBorderThickness)
-        Dim backBrush As SolidBrush = New SolidBrush(Me.BackColor)
-        DrawHelpers.DrawRoundedRectangle(e.Graphics, rect, GroupboxBorderRadius, borderPen, backBrush)
-    End Sub
-
-    Private Function GetTitleHeight() As Integer
-        Return titleLabel.Height + 5 * 2
-    End Function
-    Private Sub My_Scroll(sender As Object, e As ScrollEventArgs) Handles Me.Scroll
-        Me.titleContainer.Location = New Point(0, 0)
-    End Sub
-    Private Sub My_SizeChanged(sender As Object, e As EventArgs) Handles Me.SizeChanged
-        Me.titleContainer.Size = New Size(Me.Width, GetTitleHeight)
-        Me.titleContainer.MaximumSize = New Size(Me.Width, GetTitleHeight)
-        'MessageBox.Show(Me.Size.ToString())
-    End Sub
-
-    Private Sub Title_Click(sender As Object, e As EventArgs) Handles titleContainer.Click
-        CollapseOrExpand()
-    End Sub
-    Private Sub TitleText_Click(sender As Object, e As EventArgs) Handles titleLabel.Click
-        CollapseOrExpand()
-    End Sub
-    Private Sub TitleMark_Click(sender As Object, e As EventArgs) Handles titleExpandMark.Click
-        CollapseOrExpand()
-    End Sub
-    Private Sub CollapseOrExpand()
-        If GroupboxEnableCollapsable = False Then
-            Return
-        End If
-
-        If mExpanded Then
-            Collapse()
-        Else
-            Expand()
-        End If
-    End Sub
-
-    Private Sub UpdateHeight()
-        If mExpanded Then
-            If GroupboxHeightOption = HeightOptions.Expanable Then
-                Me.AutoScroll = False
-                Me.AutoSize = True
-                Me.SetAutoSizeMode(AutoSizeMode.GrowAndShrink)
-            Else
-                Me.AutoSize = False
-                Me.AutoScroll = True
-                Me.Height = nOriginHeight
-            End If
-
-        Else
-            nOriginHeight = Me.Height
-            Me.AutoSize = False
-            Me.AutoScroll = False
-            Me.Height = GetTitleHeight()
-        End If
-    End Sub
-
-    Public Sub Expand()
-        If mExpanded Then
-            Return
-        End If
-        mExpanded = True
-        Me.titleExpandMark.Text = "-"
-        UpdateHeight()
-        RaiseEvent ExpandEvent(Me)
-        Me.Refresh()
-    End Sub
-
-    Public Sub Collapse()
-        If Not GroupboxEnableCollapsable Or Not mExpanded Then
-            Return
-        End If
-        mExpanded = False
-        Me.titleExpandMark.Text = "+"
-        UpdateHeight()
-        RaiseEvent CollapseEvent(Me)
-        Me.Refresh()
-    End Sub
-End Class
 
 
 
@@ -770,6 +516,7 @@ Public Module GroupboxConsts
     Public DEFAULT_GROUPBOX_TITLE_FONT As Font = New System.Drawing.Font("Segoe UI", 22.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point)
     Public DEFAULT_GROUPBOX_TITLE_TEXT_COLOR As Color = Color.White
     Public DEFAULT_GROUPBOX_TITLE_TEXT As String = "Title"
+    Public DEFAULT_GROUPBOX_TITLE_HEIGHT As Integer = 50
     Public DEFAULT_GROUPBOX_BORDER_COLOR As Color = System.Drawing.SystemColors.GradientInactiveCaption
     Public Const DEFAULT_GROUPBOX_BORDER_THICKNESS As Integer = 1
     Public Const DEFAULT_GROUPBOX_BORDER_RADIUS As Integer = 0
@@ -906,147 +653,4 @@ Public Class MetroGroupboxCollectionDesigner
         Dim content As Panel = DirectCast(Me.Control, GroupboxCollection).WorkingArea
         EnableDesignMode(content, "WorkingArea")
     End Sub
-
-    'Use pull model To populate smart tag menu. 
-    'Public Overrides ReadOnly Property ActionLists() _
-    'As DesignerActionListCollection
-    '    Get
-    '        If lists Is Nothing Then
-    '            lists = New DesignerActionListCollection()
-    '            lists.Add(
-    '            New MetroGroupboxCollectionActionList(Me.Component))
-    '        End If
-    '        Return lists
-    '    End Get
-    'End Property
 End Class
-
-'Public Class MetroGroupboxCollectionActionList
-'    Inherits DesignerActionList
-
-'    Private metroGroupboxCollection As GroupboxCollection
-
-'    Private designerActionUISvc As DesignerActionUIService = Nothing
-
-'    The constructor associates the control  
-'    With the smart tag list. 
-'    Public Sub New(ByVal component As IComponent)
-
-'        MyBase.New(component)
-'        Me.metroGroupboxCollection = component
-
-'        Cache a reference To DesignerActionUIService, so the 
-'         DesignerActionList can be refreshed. 
-'        Me.designerActionUISvc =
-'        CType(GetService(GetType(DesignerActionUIService)),
-'        DesignerActionUIService)
-
-'    End Sub
-
-'    Helper method To retrieve control properties. Use Of  
-'     GetProperties enables undo And menu updates To work properly. 
-'    Private Function GetPropertyByName(ByVal propName As String) _
-'    As PropertyDescriptor
-'        Dim prop As PropertyDescriptor
-'        prop = TypeDescriptor.GetProperties(metroGroupboxCollection)(propName)
-'        If prop Is Nothing Then
-'            Throw New ArgumentException(
-'            "Matching ColorLabel property not found!", propName)
-'        Else
-'            Return prop
-'        End If
-'    End Function
-
-'    Properties that are targets Of DesignerActionPropertyItem entries. 
-'    Public Property BorderColor() As Color
-'        Get
-'            Return metroGroupboxCollection.BorderColor
-'        End Get
-'        Set(ByVal value As Color)
-'            GetPropertyByName("BorderColor").SetValue(metroGroupboxCollection, value)
-'        End Set
-'    End Property
-
-'    Public Property BorderThickness() As Integer
-'        Get
-'            Return metroGroupboxCollection.BorderThickness
-'        End Get
-'        Set(ByVal value As Integer)
-'            GetPropertyByName("BorderThickness").SetValue(metroGroupboxCollection, value)
-'        End Set
-'    End Property
-
-'    Public Property BorderRadius() As Integer
-'        Get
-'            Return metroGroupboxCollection.BorderRadius
-'        End Get
-'        Set(ByVal value As Integer)
-'            GetPropertyByName("BorderRadius").SetValue(metroGroupboxCollection, value)
-'        End Set
-'    End Property
-
-'    Public Property GroupboxCount() As Integer
-'        Get
-'            Return metroGroupboxCollection.GroupboxCount
-'        End Get
-'        Set(ByVal value As Integer)
-'            GetPropertyByName("GroupboxCount").SetValue(metroGroupboxCollection, value)
-'        End Set
-'    End Property
-
-'    Public Sub AddGroupbox()
-'TODO:   Add GroupBox Logic Here
-'    End Sub
-'    Implementation of this virtual method creates smart tag   
-'     items, associates their targets, And collects into list. 
-'    Public Overrides Function GetSortedActionItems() _
-'    As DesignerActionItemCollection
-'        Dim items As New DesignerActionItemCollection()
-
-'        Define static section header entries.
-'        items.Add(New DesignerActionHeaderItem("Appearance"))
-'        items.Add(New DesignerActionHeaderItem("Behavior"))
-'        items.Add(New DesignerActionHeaderItem("Information"))
-
-'        items.Add(
-'        New DesignerActionPropertyItem(
-'        "BorderColor",
-'        "Border Color",
-'        "Appearance",
-'        "Selects the border color."))
-
-'        items.Add(
-'        New DesignerActionPropertyItem(
-'        "BorderThickness",
-'        "Border Thickness",
-'        "Appearance",
-'        "Inserts the border thickness."))
-
-'        items.Add(
-'        New DesignerActionPropertyItem(
-'        "BorderRadius",
-'        "Border Radius",
-'        "Appearance",
-'        "Inserts the border corner radius."))
-
-'        This next method item Is also added to the context menu  
-'         (as a designer verb).
-'        items.Add(
-'        New DesignerActionMethodItem(
-'        Me,
-'        "AddGroupbox",
-'        "Add Groupbox",
-'        "Behavior",
-'        "Add new groupbox.",
-'        True))
-
-'        Create entries for static Information section. 
-'        items.Add(
-'        New DesignerActionTextItem(
-'        Convert.ToString(GroupboxCount),
-'        "Information"))
-'        Return items
-'    End Function
-
-'End Class
-'#End Region

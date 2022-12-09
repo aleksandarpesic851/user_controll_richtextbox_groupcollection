@@ -16,7 +16,7 @@ Public Class Form1
 
     End Sub
 
-    Private addedGroupbox As MetroGroupBox
+    Private addedGroupbox As Groupbox
     'Private Sub ButtonAdd_Click(sender As Object, e As EventArgs)
     '    addedGroupbox = GroupboxCollection1.AddGroupbox()
     '    addedGroupbox.Height = 300
@@ -27,6 +27,19 @@ Public Class Form1
     End Sub
 
     Private addedControl As Control
+
+    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+    End Sub
+
+    Private Sub MetroGroupBox1_Paint(sender As Object, e As PaintEventArgs)
+
+    End Sub
+
+    Private Sub MetroGroupBox1_Paint_1(sender As Object, e As PaintEventArgs)
+
+    End Sub
+
 
     'Private Sub MetroGroupBox3_ExpandEvent_1(sender As Object) Handles MetroGroupBox3.ExpandEvent
     '    Dim _control As Button = New Button()
