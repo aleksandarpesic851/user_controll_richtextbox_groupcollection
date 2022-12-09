@@ -28,17 +28,25 @@ Public Class Form1
 
     Private addedControl As Control
 
-    Private Sub MetroGroupBox3_ExpandEvent_1(sender As Object) Handles MetroGroupBox3.ExpandEvent
-        Dim _control As Button = New Button()
-        _control.Text = "Created Programatically"
-        MetroGroupBox3.Controls.Add(_control)
-        _control.Location = New Point(50, 100)
-        _control.Size = New Size(100, 100)
+    'Private Sub MetroGroupBox3_ExpandEvent_1(sender As Object) Handles MetroGroupBox3.ExpandEvent
+    '    Dim _control As Button = New Button()
+    '    _control.Text = "Created Programatically"
+    '    MetroGroupBox3.Controls.Add(_control)
+    '    _control.Location = New Point(50, 100)
+    '    _control.Size = New Size(100, 100)
 
-        Dim other_control As Richtextbox = New Richtextbox
-        MetroGroupBox3.Controls.Add(other_control)
-        other_control.Location = New Point(50, 250)
+    '    Dim other_control As Richtextbox = New Richtextbox
+    '    MetroGroupBox3.Controls.Add(other_control)
+    '    other_control.Location = New Point(50, 250)
 
-        MessageBox.Show("Expanded")
-    End Sub
+    '    MessageBox.Show("Expanded")
+    'End Sub
+
+    'Private Sub SplitContainer1_Panel1_Paint(sender As Object, e As PaintEventArgs)
+
+    'End Sub
+
+    'Private Sub SplitContainer1_Panel2_Paint(sender As Object, e As PaintEventArgs)
+
+    'End Sub
 End Class

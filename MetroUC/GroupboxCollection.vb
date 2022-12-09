@@ -75,6 +75,18 @@ Public Class GroupboxCollection
         'End Set
     End Property
 
+    Private mGroupboxGrowToCollectionWidth As Boolean = False
+    Public Property GroupboxGrowToCollectionWidth As Boolean
+        Get
+            Return mGroupboxGrowToCollectionWidth
+        End Get
+        Set(value As Boolean)
+            mGroupboxGrowToCollectionWidth = value
+            UpdateLayout(False)
+        End Set
+    End Property
+
+
 #End Region
     Friend WithEvents pnlWorkingArea As FlowLayoutPanel
 
@@ -136,17 +148,17 @@ Public Class GroupboxCollection
         If IsValidControl(e.Control) Then
             mGroupboxCount = pnlWorkingArea.Controls.Count
             e.Control.Width = GetGroupboxWidth()
-            UpdateLayout()
+            UpdateLayout(False)
         End If
     End Sub
 
     Private Sub MyControlRemoved(sender As Object, e As ControlEventArgs) Handles pnlWorkingArea.ControlRemoved
         mGroupboxCount = pnlWorkingArea.Controls.Count
-        UpdateLayout()
+        UpdateLayout(False)
     End Sub
 
     Private Sub MySizeChanged(sender As Object, e As EventArgs) Handles pnlWorkingArea.SizeChanged
-        UpdateLayout()
+        UpdateLayout(True)
     End Sub
 
 
@@ -194,7 +206,7 @@ Public Class GroupboxCollection
         End If
     End Sub
 
-    Private Sub UpdateLayout()
+    Private Sub UpdateLayout(ByVal onlySize As Boolean)
         Dim nControlCnt As Integer = pnlWorkingArea.Controls.Count
         Dim nOffsetX As Integer = mPadding + 3 + pnlWorkingArea.Margin.Left
         Dim nOffsetY As Integer = mPadding + 3 + pnlWorkingArea.Margin.Top
@@ -208,7 +220,12 @@ Public Class GroupboxCollection
         Dim childGroupbox As MetroGroupBox
         For i As Integer = 0 To nControlCnt - 1
             childGroupbox = TryCast(pnlWorkingArea.Controls.Item(i), MetroGroupBox)
-            childGroupbox.Location = New Point(nOffsetY, nTopY)
+            If Not onlySize Then
+                childGroupbox.Location = New Point(nOffsetY, nTopY)
+            End If
+            If Not GroupboxGrowToCollectionWidth Then
+                Continue For
+            End If
             If childGroupbox.AutoSize Then
                 childGroupbox.AutoSize = False
                 childGroupbox.Width = GetGroupboxWidth()
@@ -222,7 +239,7 @@ Public Class GroupboxCollection
         For i As Integer = 0 To nControlCnt - 1
             pnlWorkingArea.Controls.Item(i).ResumeLayout(False)
         Next
-        Me.Refresh()
+        Me.ResumeLayout(False)
     End Sub
 
     Private Function IsValidControl(_control As Control) As Boolean
@@ -370,6 +387,8 @@ Public Class MetroGroupBox
         Me.titleContainer.SuspendLayout()
         Me.SuspendLayout()
 
+        Me.MinimumSize = New Size(DEFAULT_GROUPBOX_WIDTH, DEFAULT_GROUPBOX_HEIGHT)
+
         Me.SetStyle(ControlStyles.SupportsTransparentBackColor, True)
         Me.DoubleBuffered = True
         Me.Size = New Size(nWidth, GroupboxConsts.DEFAULT_GROUPBOX_HEIGHT)
@@ -423,9 +442,6 @@ Public Class MetroGroupBox
         'MessageBox.Show(Me.Size.ToString())
     End Sub
 
-    Private Sub My_Validated(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Validated
-        Me.titleContainer.Size = New Size(Me.Width, GetTitleHeight)
-    End Sub
     Private Sub Title_Click(sender As Object, e As EventArgs) Handles titleContainer.Click
         CollapseOrExpand()
     End Sub

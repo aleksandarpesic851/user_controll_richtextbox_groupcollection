@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class Richtextbox
     Inherits System.Windows.Forms.UserControl
 
     'UserControl overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -20,13 +20,13 @@ Partial Class Richtextbox
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Richtextbox))
         Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
         Me.ToolStripButton_Open = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripButton_Binary = New System.Windows.Forms.ToolStripButton()
-        Me.ToolStripButton_HTML = New System.Windows.Forms.ToolStripButton()
+        Me.ToolStripButton_Print = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripButton_Cut = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripButton_Copy = New System.Windows.Forms.ToolStripButton()
@@ -56,18 +56,20 @@ Partial Class Richtextbox
         Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
         Me.ToolStripButton_Picture = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripButton_Table = New System.Windows.Forms.ToolStripButton()
-        Me.rtbEditor = New System.Windows.Forms.RichTextBox()
+        Me.rtbEditor = New RichTextBoxPrintCtrl()
         Me.OpenFileDialogForPicture = New System.Windows.Forms.OpenFileDialog()
+        Me.PrintDocument1 = New System.Drawing.Printing.PrintDocument()
+        Me.PrintDialog1 = New System.Windows.Forms.PrintDialog()
         Me.ToolStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
         'ToolStrip1
         '
         Me.ToolStrip1.BackColor = System.Drawing.SystemColors.Control
-        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripButton_Open, Me.ToolStripButton_Binary, Me.ToolStripButton_HTML, Me.ToolStripSeparator6, Me.ToolStripButton_Cut, Me.ToolStripButton_Copy, Me.ToolStripButton_Paste, Me.ToolStripButton_Undo, Me.ToolStripButton_Redo, Me.ToolStripSeparator1, Me.ToolStripButton_Font, Me.ToolStripButton_Color, Me.ToolStripButton_BG_Color, Me.ToolStripSeparator7, Me.ToolStripButton_Bold, Me.ToolStripButton_Italic, Me.ToolStripButton_Underline, Me.ToolStripButton_Strike, Me.ToolStripSeparator2, Me.ToolStripButton_Superscript, Me.ToolStripButton_Subscript, Me.ToolStripButton_Normal, Me.ToolStripSeparator3, Me.ToolStripButton_LeftAlign, Me.ToolStripButton_CenterAlign, Me.ToolStripButton_RightAlign, Me.ToolStripSeparator4, Me.ToolStripButton_Bullet, Me.ToolStripButton_List, Me.ToolStripSeparator5, Me.ToolStripButton_Picture, Me.ToolStripButton_Table})
+        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripButton_Open, Me.ToolStripButton_Binary, Me.ToolStripButton_Print, Me.ToolStripSeparator6, Me.ToolStripButton_Cut, Me.ToolStripButton_Copy, Me.ToolStripButton_Paste, Me.ToolStripButton_Undo, Me.ToolStripButton_Redo, Me.ToolStripSeparator1, Me.ToolStripButton_Font, Me.ToolStripButton_Color, Me.ToolStripButton_BG_Color, Me.ToolStripSeparator7, Me.ToolStripButton_Bold, Me.ToolStripButton_Italic, Me.ToolStripButton_Underline, Me.ToolStripButton_Strike, Me.ToolStripSeparator2, Me.ToolStripButton_Superscript, Me.ToolStripButton_Subscript, Me.ToolStripButton_Normal, Me.ToolStripSeparator3, Me.ToolStripButton_LeftAlign, Me.ToolStripButton_CenterAlign, Me.ToolStripButton_RightAlign, Me.ToolStripSeparator4, Me.ToolStripButton_Bullet, Me.ToolStripButton_List, Me.ToolStripSeparator5, Me.ToolStripButton_Picture, Me.ToolStripButton_Table})
         Me.ToolStrip1.Location = New System.Drawing.Point(1, 1)
         Me.ToolStrip1.Name = "ToolStrip1"
-        Me.ToolStrip1.Size = New System.Drawing.Size(632, 25)
+        Me.ToolStrip1.Size = New System.Drawing.Size(747, 25)
         Me.ToolStrip1.TabIndex = 0
         Me.ToolStrip1.Text = "ToolStrip1"
         '
@@ -89,14 +91,14 @@ Partial Class Richtextbox
         Me.ToolStripButton_Binary.Size = New System.Drawing.Size(23, 22)
         Me.ToolStripButton_Binary.Text = "Save as Binary"
         '
-        'ToolStripButton_HTML
+        'ToolStripButton_Print
         '
-        Me.ToolStripButton_HTML.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.ToolStripButton_HTML.Image = CType(resources.GetObject("ToolStripButton_HTML.Image"), System.Drawing.Image)
-        Me.ToolStripButton_HTML.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.ToolStripButton_HTML.Name = "ToolStripButton_HTML"
-        Me.ToolStripButton_HTML.Size = New System.Drawing.Size(23, 22)
-        Me.ToolStripButton_HTML.Text = "Save as HTML"
+        Me.ToolStripButton_Print.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.ToolStripButton_Print.Image = CType(resources.GetObject("ToolStripButton_Print.Image"), System.Drawing.Image)
+        Me.ToolStripButton_Print.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.ToolStripButton_Print.Name = "ToolStripButton_Print"
+        Me.ToolStripButton_Print.Size = New System.Drawing.Size(23, 22)
+        Me.ToolStripButton_Print.Text = "Print"
         '
         'ToolStripSeparator6
         '
@@ -340,7 +342,7 @@ Partial Class Richtextbox
         Me.rtbEditor.Dock = System.Windows.Forms.DockStyle.Fill
         Me.rtbEditor.Location = New System.Drawing.Point(1, 26)
         Me.rtbEditor.Name = "rtbEditor"
-        Me.rtbEditor.Size = New System.Drawing.Size(632, 240)
+        Me.rtbEditor.Size = New System.Drawing.Size(747, 240)
         Me.rtbEditor.TabIndex = 1
         Me.rtbEditor.Text = ""
         '
@@ -348,6 +350,10 @@ Partial Class Richtextbox
         '
         Me.OpenFileDialogForPicture.FileName = "OpenFileDialogForPicture"
         Me.OpenFileDialogForPicture.Title = "Select an Image"
+        '
+        'PrintDialog1
+        '
+        Me.PrintDialog1.UseEXDialog = True
         '
         'Richtextbox
         '
@@ -357,7 +363,7 @@ Partial Class Richtextbox
         Me.Controls.Add(Me.ToolStrip1)
         Me.Name = "Richtextbox"
         Me.Padding = New System.Windows.Forms.Padding(1)
-        Me.Size = New System.Drawing.Size(634, 267)
+        Me.Size = New System.Drawing.Size(749, 267)
         Me.ToolStrip1.ResumeLayout(False)
         Me.ToolStrip1.PerformLayout()
         Me.ResumeLayout(False)
@@ -366,7 +372,7 @@ Partial Class Richtextbox
     End Sub
 
     Friend WithEvents ToolStrip1 As ToolStrip
-    Friend WithEvents rtbEditor As Windows.Forms.RichTextBox
+    Friend WithEvents rtbEditor As RichTextBoxPrintCtrl
     Friend WithEvents ToolStripButton_Cut As ToolStripButton
     Friend WithEvents ToolStripButton_Copy As ToolStripButton
     Friend WithEvents ToolStripButton_Paste As ToolStripButton
@@ -391,7 +397,6 @@ Partial Class Richtextbox
     Friend WithEvents ToolStripButton_Table As ToolStripButton
     Friend WithEvents ToolStripSeparator6 As ToolStripSeparator
     Friend WithEvents ToolStripButton_Binary As ToolStripButton
-    Friend WithEvents ToolStripButton_HTML As ToolStripButton
     Friend WithEvents ToolStripButton_Normal As ToolStripButton
     Friend WithEvents ToolStripButton_Color As ToolStripButton
     Friend WithEvents ToolStripButton_BG_Color As ToolStripButton
@@ -400,4 +405,7 @@ Partial Class Richtextbox
     Friend WithEvents OpenFileDialogForPicture As OpenFileDialog
     Friend WithEvents ToolStripButton_Strike As ToolStripButton
     Friend WithEvents ToolStripButton_Open As ToolStripButton
+    Friend WithEvents ToolStripButton_Print As ToolStripButton
+    Friend WithEvents PrintDocument1 As Printing.PrintDocument
+    Friend WithEvents PrintDialog1 As PrintDialog
 End Class
