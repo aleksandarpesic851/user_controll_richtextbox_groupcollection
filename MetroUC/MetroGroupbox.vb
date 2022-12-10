@@ -3,7 +3,7 @@ Imports System.Drawing.Drawing2D
 Imports Microsoft.DotNet.DesignTools.Designers
 
 <Designer(GetType(GroupboxDesigner))>
-Public Class Groupbox
+Public Class MetroGroupbox
     <Category("Appearance"),
         DesignerSerializationVisibility(DesignerSerializationVisibility.Content)>
     Public Property WorkingArea() As Panel
@@ -20,9 +20,6 @@ Public Class Groupbox
     Private nOriginHeight As Integer
     Private mExpanded As Boolean = True
 #Region "Groupbox Item Properties"
-    ''' <summary>
-    ''' Groupbox Items' Propertie
-    ''' </summary>
     Private mGroupboxTitleText As String = GroupboxConsts.DEFAULT_GROUPBOX_TITLE_TEXT
     Public Property GroupboxTitleText As String
         Get
@@ -43,7 +40,6 @@ Public Class Groupbox
         End Get
         Set(value As Color)
             mGroupboxTitleBackgroundColor = value
-            'titleLabel.BackColor = value
             titleContainer.BackColor = value
         End Set
     End Property
@@ -245,7 +241,7 @@ Public Class GroupboxDesigner
     Inherits ParentControlDesigner
     Public Overrides Sub Initialize(component As System.ComponentModel.IComponent)
         MyBase.Initialize(component)
-        Dim content As Panel = DirectCast(Me.Control, Groupbox).WorkingArea
+        Dim content As Panel = DirectCast(Me.Control, MetroGroupbox).WorkingArea
         EnableDesignMode(content, "WorkingArea")
     End Sub
 End Class

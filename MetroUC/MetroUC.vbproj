@@ -17,7 +17,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Update="Richtextbox.vb" />
+    <Compile Update="MetroRichtextbox.vb" />
   </ItemGroup>
 
   <ItemGroup>

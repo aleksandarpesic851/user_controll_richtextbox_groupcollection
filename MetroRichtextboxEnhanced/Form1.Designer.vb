@@ -24,11 +24,13 @@ Partial Class Form1
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Me.WorkingArea = New System.Windows.Forms.Panel()
-        Me.GroupboxCollection1 = New MetroUC.GroupboxCollection(Me.components)
-        Me.Groupbox2 = New MetroUC.Groupbox()
-        Me.Groupbox3 = New MetroUC.Groupbox()
-        Me.Richtextbox1 = New MetroUC.Richtextbox()
-        Me.Groupbox4 = New MetroUC.Groupbox()
+        Me.GroupboxCollection1 = New MetroUC.MetroGroupboxCollection(Me.components)
+        Me.Groupbox2 = New MetroUC.MetroGroupbox()
+        Me.Groupbox3 = New MetroUC.MetroGroupbox()
+        Me.Richtextbox1 = New MetroUC.MetroRichtextbox()
+        Me.Groupbox4 = New MetroUC.MetroGroupbox()
+        Me.Button1 = New System.Windows.Forms.Button()
+        Me.Button2 = New System.Windows.Forms.Button()
         Me.GroupboxCollection1.WorkingArea.SuspendLayout()
         Me.GroupboxCollection1.SuspendLayout()
         Me.Groupbox2.SuspendLayout()
@@ -52,7 +54,8 @@ Partial Class Form1
         Me.GroupboxCollection1.BorderColor = System.Drawing.Color.Black
         Me.GroupboxCollection1.BorderRadius = 1
         Me.GroupboxCollection1.BorderThickness = 1
-        Me.GroupboxCollection1.GroupboxGrowToCollectionWidth = False
+        Me.GroupboxCollection1.EndUserCanResize = False
+        Me.GroupboxCollection1.GroupboxGrowToCollectionWidth = True
         Me.GroupboxCollection1.Location = New System.Drawing.Point(70, 12)
         Me.GroupboxCollection1.Name = "GroupboxCollection1"
         Me.GroupboxCollection1.Padding = New System.Windows.Forms.Padding(6)
@@ -120,7 +123,7 @@ Partial Class Form1
         Me.Groupbox3.MinimumSize = New System.Drawing.Size(100, 10)
         Me.Groupbox3.Name = "Groupbox3"
         Me.Groupbox3.Padding = New System.Windows.Forms.Padding(5)
-        Me.Groupbox3.Size = New System.Drawing.Size(504, 200)
+        Me.Groupbox3.Size = New System.Drawing.Size(565, 200)
         Me.Groupbox3.TabIndex = 1
         '
         'Groupbox3.WorkingArea
@@ -131,7 +134,7 @@ Partial Class Form1
         Me.Groupbox3.WorkingArea.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Groupbox3.WorkingArea.Location = New System.Drawing.Point(5, 55)
         Me.Groupbox3.WorkingArea.Name = "WorkingArea"
-        Me.Groupbox3.WorkingArea.Size = New System.Drawing.Size(494, 140)
+        Me.Groupbox3.WorkingArea.Size = New System.Drawing.Size(555, 140)
         Me.Groupbox3.WorkingArea.TabIndex = 1
         '
         'Richtextbox1
@@ -165,7 +168,7 @@ Partial Class Form1
         Me.Groupbox4.MinimumSize = New System.Drawing.Size(100, 10)
         Me.Groupbox4.Name = "Groupbox4"
         Me.Groupbox4.Padding = New System.Windows.Forms.Padding(1)
-        Me.Groupbox4.Size = New System.Drawing.Size(411, 150)
+        Me.Groupbox4.Size = New System.Drawing.Size(565, 150)
         Me.Groupbox4.TabIndex = 2
         '
         'Groupbox4.WorkingArea
@@ -174,14 +177,34 @@ Partial Class Form1
         Me.Groupbox4.WorkingArea.Dock = System.Windows.Forms.DockStyle.Fill
         Me.Groupbox4.WorkingArea.Location = New System.Drawing.Point(1, 51)
         Me.Groupbox4.WorkingArea.Name = "WorkingArea"
-        Me.Groupbox4.WorkingArea.Size = New System.Drawing.Size(409, 98)
+        Me.Groupbox4.WorkingArea.Size = New System.Drawing.Size(563, 98)
         Me.Groupbox4.WorkingArea.TabIndex = 1
+        '
+        'Button1
+        '
+        Me.Button1.Location = New System.Drawing.Point(736, 94)
+        Me.Button1.Name = "Button1"
+        Me.Button1.Size = New System.Drawing.Size(201, 93)
+        Me.Button1.TabIndex = 4
+        Me.Button1.Text = "Add Groupbox into Collection"
+        Me.Button1.UseVisualStyleBackColor = True
+        '
+        'Button2
+        '
+        Me.Button2.Location = New System.Drawing.Point(736, 234)
+        Me.Button2.Name = "Button2"
+        Me.Button2.Size = New System.Drawing.Size(201, 83)
+        Me.Button2.TabIndex = 5
+        Me.Button2.Text = "Add a control into last groupbox"
+        Me.Button2.UseVisualStyleBackColor = True
         '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(7.0!, 15.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(984, 749)
+        Me.Controls.Add(Me.Button2)
+        Me.Controls.Add(Me.Button1)
         Me.Controls.Add(Me.GroupboxCollection1)
         Me.Name = "Form1"
         Me.Text = "Form1"
@@ -196,9 +219,11 @@ Partial Class Form1
     End Sub
 
     Friend WithEvents WorkingArea As Panel
-    Friend WithEvents GroupboxCollection1 As GroupboxCollection
-    Friend WithEvents Groupbox2 As MetroUC.Groupbox
-    Friend WithEvents Groupbox3 As MetroUC.Groupbox
-    Friend WithEvents Richtextbox1 As MetroUC.Richtextbox
-    Friend WithEvents Groupbox4 As MetroUC.Groupbox
+    Friend WithEvents GroupboxCollection1 As MetroGroupboxCollection
+    Friend WithEvents Groupbox2 As MetroUC.MetroGroupbox
+    Friend WithEvents Groupbox3 As MetroUC.MetroGroupbox
+    Friend WithEvents Richtextbox1 As MetroUC.MetroRichtextbox
+    Friend WithEvents Groupbox4 As MetroUC.MetroGroupbox
+    Friend WithEvents Button1 As Button
+    Friend WithEvents Button2 As Button
 End Class

@@ -9,57 +9,32 @@ Public Class Form1
 
     End Sub
 
-    Private Sub MetroGroupBox3_ExpandEvent(sender As Object)
-    End Sub
 
-    Private Sub GroupboxCollection1_Paint(sender As Object, e As PaintEventArgs)
-
-    End Sub
-
-    Private addedGroupbox As Groupbox
-    'Private Sub ButtonAdd_Click(sender As Object, e As EventArgs)
-    '    addedGroupbox = GroupboxCollection1.AddGroupbox()
-    '    addedGroupbox.Height = 300
-    'End Sub
-
-    Private Sub MetroGroupBox2_CollapseEvent(sender As Object)
-        MessageBox.Show("Collapsed")
-    End Sub
+    Private addedGroupbox As MetroGroupbox
 
     Private addedControl As Control
 
-    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        addedGroupbox = GroupboxCollection1.AddGroupbox()
     End Sub
 
-    Private Sub MetroGroupBox1_Paint(sender As Object, e As PaintEventArgs)
+    Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
+        Dim _metroGroupbox As MetroGroupbox
+        Dim nCnt As Integer = GroupboxCollection1.WorkingArea.Controls.Count
+        If nCnt < 1 Then
+            MessageBox.Show("Please insert first")
+        End If
+        _metroGroupbox = TryCast(GroupboxCollection1.WorkingArea.Controls.Item(nCnt - 1), MetroGroupbox)
+
+        Dim _control As Button = New Button()
+        _control.Text = "Created Programatically"
+        _metroGroupbox.WorkingArea.Controls.Add(_control)
+        _control.Location = New Point(50, 100)
+        _control.Size = New Size(100, 100)
+
+        Dim other_control As RichTextBox = New RichTextBox
+        _metroGroupbox.WorkingArea.Controls.Add(other_control)
+        other_control.Location = New Point(50, 250)
 
     End Sub
-
-    Private Sub MetroGroupBox1_Paint_1(sender As Object, e As PaintEventArgs)
-
-    End Sub
-
-
-    'Private Sub MetroGroupBox3_ExpandEvent_1(sender As Object) Handles MetroGroupBox3.ExpandEvent
-    '    Dim _control As Button = New Button()
-    '    _control.Text = "Created Programatically"
-    '    MetroGroupBox3.Controls.Add(_control)
-    '    _control.Location = New Point(50, 100)
-    '    _control.Size = New Size(100, 100)
-
-    '    Dim other_control As Richtextbox = New Richtextbox
-    '    MetroGroupBox3.Controls.Add(other_control)
-    '    other_control.Location = New Point(50, 250)
-
-    '    MessageBox.Show("Expanded")
-    'End Sub
-
-    'Private Sub SplitContainer1_Panel1_Paint(sender As Object, e As PaintEventArgs)
-
-    'End Sub
-
-    'Private Sub SplitContainer1_Panel2_Paint(sender As Object, e As PaintEventArgs)
-
-    'End Sub
 End Class
