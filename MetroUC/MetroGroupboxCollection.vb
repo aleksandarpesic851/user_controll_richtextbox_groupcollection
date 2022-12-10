@@ -108,6 +108,9 @@ Public Class MetroGroupboxCollection
         Me.Controls.Add(pnlWorkingArea)
         pnlWorkingArea.Size = Me.Size
         pnlWorkingArea.Location = New Point(0, 0)
+        pnlWorkingArea.HorizontalScroll.Maximum = 0
+        pnlWorkingArea.AutoScroll = False
+        pnlWorkingArea.VerticalScroll.Visible = False
         pnlWorkingArea.AutoScroll = True
         pnlWorkingArea.Dock = DockStyle.Fill
         pnlWorkingArea.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight
@@ -144,7 +147,6 @@ Public Class MetroGroupboxCollection
         UpdateLayout(True)
     End Sub
 
-
     Public Function AddGroupbox() As MetroGroupbox
         Dim newControl As MetroGroupbox = New MetroGroupbox()
         pnlWorkingArea.Controls.Add(newControl)
@@ -162,11 +164,6 @@ Public Class MetroGroupboxCollection
         If pnlWorkingArea.VerticalScroll.Visible Then
             nWidth -= System.Windows.Forms.SystemInformation.VerticalScrollBarWidth
         End If
-        For Each _control As MetroGroupbox In pnlWorkingArea.Controls
-            If _control.GroupboxHeightOption = HeightOptions.Expanable Then
-                nWidth = Math.Max(nWidth, _control.Width)
-            End If
-        Next
         Return nWidth
     End Function
 

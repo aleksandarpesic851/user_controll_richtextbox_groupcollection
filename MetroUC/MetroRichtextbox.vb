@@ -65,6 +65,16 @@ Public Class MetroRichtextbox
         End If
     End Sub
 
+    Private Sub My_SelectionChanged(sender As Object, e As EventArgs) Handles rtbEditor.SelectionChanged
+        ToolStripButton_Bold.Checked = rtbEditor.SelectionFont.Bold
+        ToolStripButton_Italic.Checked = rtbEditor.SelectionFont.Italic
+        ToolStripButton_Underline.Checked = rtbEditor.SelectionFont.Underline
+        ToolStripButton_Strike.Checked = rtbEditor.SelectionFont.Strikeout
+
+        ToolStripButton_LeftAlign.Checked = (rtbEditor.SelectionAlignment = HorizontalAlignment.Left)
+        ToolStripButton_RightAlign.Checked = (rtbEditor.SelectionAlignment = HorizontalAlignment.Right)
+        ToolStripButton_CenterAlign.Checked = (rtbEditor.SelectionAlignment = HorizontalAlignment.Center)
+    End Sub
     Private Sub MyPaint(sender As Object, e As PaintEventArgs) Handles MyBase.Paint
         'Me.BorderStyle = BorderStyle.None
         e.Graphics.SmoothingMode = SmoothingMode.AntiAlias

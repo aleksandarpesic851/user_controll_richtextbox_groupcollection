@@ -179,19 +179,12 @@ Public Class MetroGroupbox
     Private Sub UpdateHeight()
         If mExpanded Then
             If GroupboxHeightOption = HeightOptions.Expanable Then
-                Me.pnlWorkingArea.AutoScroll = False
-                Me.titleExpandMark.Location = New Point(0, 0)
-                Me.pnlWorkingArea.AutoSize = True
-                Me.pnlWorkingArea.AutoSizeMode = AutoSizeMode.GrowAndShrink
-
-                Me.AutoScroll = False
-                Me.AutoSize = True
-                Me.AutoSizeMode = AutoSizeMode.GrowAndShrink
+                Dim nH As Integer = DEFAULT_GROUPBOX_HEIGHT
+                For Each _control As Control In pnlWorkingArea.Controls
+                    nH = Math.Max(nH, _control.Location.Y + _control.Height)
+                Next
+                Me.Height = GroupboxTitleHeight + nH + GroupboxBorderThickness * 2
             Else
-                Me.pnlWorkingArea.AutoScroll = True
-                Me.pnlWorkingArea.AutoSize = False
-                Me.AutoScroll = True
-                Me.AutoSize = False
                 If nOriginHeight > 1 Then
                     Me.Height = nOriginHeight
                 End If

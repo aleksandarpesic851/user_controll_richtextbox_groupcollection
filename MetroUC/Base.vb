@@ -10,10 +10,10 @@ Public Module GroupboxConsts
     Public Const DEFAULT_GROUPBOX_WIDTH As Integer = 200
     Public Const DEFAULT_GROUPBOX_HEIGHT As Integer = 100
     Public DEFAULT_GROUPBOX_TITLE_BACKGROUND_COLOR As Color = System.Drawing.SystemColors.GradientActiveCaption
-    Public DEFAULT_GROUPBOX_TITLE_FONT As Font = New System.Drawing.Font("Segoe UI", 22.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point)
+    Public DEFAULT_GROUPBOX_TITLE_FONT As Font = New System.Drawing.Font("Segoe UI", 14.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point)
     Public DEFAULT_GROUPBOX_TITLE_TEXT_COLOR As Color = Color.White
     Public DEFAULT_GROUPBOX_TITLE_TEXT As String = "Title"
-    Public DEFAULT_GROUPBOX_TITLE_HEIGHT As Integer = 50
+    Public DEFAULT_GROUPBOX_TITLE_HEIGHT As Integer = 20
     Public DEFAULT_GROUPBOX_BORDER_COLOR As Color = System.Drawing.SystemColors.GradientInactiveCaption
     Public Const DEFAULT_GROUPBOX_BORDER_THICKNESS As Integer = 1
     Public Const DEFAULT_GROUPBOX_BORDER_RADIUS As Integer = 0
